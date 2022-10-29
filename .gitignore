@@ -12,5 +12,5 @@ Cargo.lock
 
 # Added by cargo
 
-/target
-/dist
+*/target
+*/dist
