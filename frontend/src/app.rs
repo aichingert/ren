@@ -1,36 +1,40 @@
 use yew::prelude::*;
+use yew_router::prelude::*;
 
-pub struct App;
+use crate::pages::{
+    home::Home,
+    timetable::Timetable,
+    page_not_found::PageNotFound
+};
 
-pub enum Msg {
+#[derive(Routable, Clone, Debug, PartialEq, Eq)]
+pub enum Route {
+    #[at("/")]
+    Home,
+    #[at("/timetable")]
+    Timetable,
+    #[not_found]
+    #[at("/404")]
+    NotFound
 }
 
-impl Component for App {
-    type Message = Msg;
-    type Properties = ();
+#[function_component]
+pub fn App() -> Html {
+    html! {
+        <BrowserRouter>
+            <main>
+                <Switch<Route> render={switch} />
+            </main>
 
-    fn create(_ctx: &Context::<Self>) -> Self {
-        Self {}
-    }
-
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        self.home_view()
-    }
-
-    fn rendered(&mut self, _ctx: &Context<Self>, _first_render: bool) {
-
+            <h1> { "App" } </h1>
+        </BrowserRouter>
     }
 }
 
-impl App {
-    pub fn home_view(&self) -> Html {
-        html! {
-            <>
-                <nav>
-                    <a href="/"> { "Home" } </a>
-                    <a href="/"> { "Timetable" } </a>
-                </nav>
-            </>
-        }
+fn switch(routes: Route) -> Html {
+    match routes {
+        Route::Home => html! { <Home /> },
+        Route::Timetable => html! { <Timetable /> },
+        Route::NotFound => html! { <PageNotFound /> }
     }
 }
