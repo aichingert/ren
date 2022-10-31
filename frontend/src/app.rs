@@ -3,7 +3,6 @@ use yew::prelude::*;
 pub struct App;
 
 pub enum Msg {
-    Test
 }
 
 impl Component for App {

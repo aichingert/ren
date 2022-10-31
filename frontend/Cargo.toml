@@ -6,5 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-web-sys = "0.3.60"
 yew = { path = "../../yew/packages/yew", features = ["csr"] }
+yew-router= { path = "../../yew/packages/yew-router" }
+
