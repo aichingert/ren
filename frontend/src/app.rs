@@ -27,12 +27,9 @@ impl App {
     pub fn home_view(&self) -> Html {
         html! {
             <>
-                <nav class="testcolor">
-                    <ul>
-                        <li> { format!("Test") } </li>
-                        <li> { format!("Table") } </li>
-                        <li> { format!("Homework") } </li>
-                    </ul>
+                <nav>
+                    <a href="/"> { "Home" } </a>
+                    <a href="/"> { "Timetable" } </a>
                 </nav>
             </>
         }

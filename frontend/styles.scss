@@ -1,8 +1,7 @@
-$font-stack: Helvetica, sans-serif;
-$primary-color: #439473;
-
-.testcolor {
-  font: 100% $font-stack;
-  color: $primary-color;
+nav {
+	a {
+		display: inline-block;
+		padding: 6px 12px;
+		text-decoration: none;
+	}
 }
-
