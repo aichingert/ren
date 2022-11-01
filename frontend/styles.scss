@@ -1,7 +1,11 @@
-nav {
-	a {
-		display: inline-block;
-		padding: 6px 12px;
-		text-decoration: none;
-	}
+
+.navbar {
+	background: #444444;
+	height: 80px;
+	display: flex;
+	justify-content: space-between;
+	padding: 0.5rem calc((100vw - 1200px) / 2);
+	z-index: 10;
+	position: relative;
 }
+

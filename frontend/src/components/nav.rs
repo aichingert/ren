@@ -7,7 +7,7 @@ use crate::app::Route;
 pub fn Nav() -> Html {
     html! {
         <>
-            <nav>
+            <nav class="navbar">
                 <div>
                     <h1> { "Notes" } </h1>
                 </div>
