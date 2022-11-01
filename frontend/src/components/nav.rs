@@ -8,14 +8,14 @@ pub fn Nav() -> Html {
     html! {
         <>
             <nav class="navbar">
-                <div>
-                    <h1> { "Notes" } </h1>
-                </div>
-                <div>
-                    <Link<Route> to={Route::Home}>
+                <div class="navbar-item">
+                    <Link<Route> classes={classes!("navbar-item")} to={Route::Home}>
+                        { "Notes" }
+                    </Link<Route>>
+                    <Link<Route> classes={classes!("navbar-item")} to={Route::Home}>
                         { "Home" }
                     </Link<Route>>
-                    <Link<Route> to={Route::Timetable}>
+                    <Link<Route> classes={classes!("navbar-item")} to={Route::Timetable}>
                         { "Timetable" }
                     </Link<Route>>
                 </div>

@@ -1,6 +1,6 @@
 
 .navbar {
-	background: #444444;
+	background: #4051B5;
 	height: 80px;
 	display: flex;
 	justify-content: space-between;
@@ -9,3 +9,22 @@
 	position: relative;
 }
 
+.navbar-item {
+	background: #4051B5;
+	height: 30px;
+	display: flex;
+	justify-content: space-between;
+	padding: 5px;
+	z-index: 10;
+	position: relative;
+}
+
+
+* {
+	color: #FFFFFF;
+	background: #2E303E;
+}
+
+h1 {
+	color: #8488A0;
+}
