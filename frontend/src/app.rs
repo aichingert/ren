@@ -6,6 +6,7 @@ use crate::pages::{
     timetable::Timetable,
     page_not_found::PageNotFound
 };
+use crate::components::nav::Nav;
 
 #[derive(Routable, Clone, Debug, PartialEq, Eq)]
 pub enum Route {
@@ -22,11 +23,13 @@ pub enum Route {
 pub fn App() -> Html {
     html! {
         <BrowserRouter>
+            <Nav />
+
             <main>
                 <Switch<Route> render={switch} />
             </main>
 
-            <h1> { "App" } </h1>
+            <footer> { "footer?" } </footer>
         </BrowserRouter>
     }
 }
