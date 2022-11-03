@@ -4,6 +4,7 @@ use yew_router::prelude::*;
 use crate::pages::{
     home::Home,
     timetable::Timetable,
+    note::Note,
     page_not_found::PageNotFound
 };
 use crate::components::nav::Nav;
@@ -14,6 +15,8 @@ pub enum Route {
     Home,
     #[at("/timetable")]
     Timetable,
+    #[at("/note")]
+    Note,
     #[not_found]
     #[at("/404")]
     NotFound
@@ -38,6 +41,7 @@ fn switch(routes: Route) -> Html {
     match routes {
         Route::Home => html! { <Home /> },
         Route::Timetable => html! { <Timetable /> },
+        Route::Note => html! { <Note /> },
         Route::NotFound => html! { <PageNotFound /> }
     }
 }

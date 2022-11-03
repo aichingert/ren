@@ -15,6 +15,9 @@ pub fn Nav() -> Html {
                     <Link<Route> classes={classes!("navbar-item")} to={Route::Home}>
                         { "Home" }
                     </Link<Route>>
+                    <Link<Route> classes={classes!("navbar-item")} to={Route::Note}>
+                        { "Note" }
+                    </Link<Route>>
                     <Link<Route> classes={classes!("navbar-item")} to={Route::Timetable}>
                         { "Timetable" }
                     </Link<Route>>
