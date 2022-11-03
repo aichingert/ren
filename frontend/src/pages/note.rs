@@ -8,6 +8,9 @@ pub fn Note(_props: &Props) -> Html {
     html! {
         <>
             <h1> { "Notes" } </h1>
+
+            <div>
+            </div>
         </>
     }
 }
