@@ -9,9 +9,6 @@ pub fn Nav() -> Html {
         <>
             <nav class="navbar">
                 <div class="navbar-item">
-                    <Link<Route> classes={classes!("navbar-item", "navbar-header")} to={Route::Home}>
-                        { "≣ Notes" }
-                    </Link<Route>>
                     <Link<Route> classes={classes!("navbar-item")} to={Route::Home}>
                         { "Home" }
                     </Link<Route>>

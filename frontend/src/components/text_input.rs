@@ -31,6 +31,6 @@ pub fn text_input(props: &Props) -> Html {
     });
 
     html! {
-        <input type="text" {value} {oninput} />
+        <input type="text" classes={classes!("")} {value} {oninput} />
     }
 }

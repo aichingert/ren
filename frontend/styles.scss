@@ -34,13 +34,6 @@ $white: #FFFFFF;
 	height: 50px;
 	padding: 20px;
 	text-align: left;
-	
-
-	.navbar-header {
-		height: 70px;
-		width: 50%;
-		color: $white;
-	}
 }
 
 * {
@@ -70,3 +63,11 @@ a {
 	}
 }
 
+input {
+	appearance: none;
+	border-radius: 4px;
+	display: inline-block;
+	outline: 0;
+	width: 100%;
+	height: relative;
+}
