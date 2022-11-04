@@ -38,13 +38,15 @@ impl Component for Note {
         true
     }
 
-    fn view(&self, _ctx: &Context<Self>) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let on_change = ctx.link().callback(Msg::Write);
 
         html! {
             <> 
                 <h1> { "Notes" } </h1>
 
                 <div>
+                    <TextInput {on_change} value={self.log.clone()} />
                 </div>
             </>
         }   
