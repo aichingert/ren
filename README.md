@@ -7,8 +7,8 @@ I wanted to create a website to use for me to take notes in school
 * Notes should be written in asciidoctor so the website can show how it should look like on the website while writing
 
 ## Milestones
-Phase | Milestone / Result | Date |
-|--| -----| | --|
+| Phase | Milestone / Result | Date |
+|--| -----| --|
 | Create Style | Finish the designing and scss for the website | 20-01-2023 |
 | Create Backend | Finish database integration for storing notes | 30-02-2023 |
 | Create Asciidoc visualizer | Finish to show the written asciidoc on the website |
