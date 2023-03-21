@@ -1,17 +1,25 @@
-use actix_web::{get, web, App, HttpServer, Responder};
+use axum::{
+    Router, Server, 
+    routing::get
+};
 
-#[get("/hello/{name}")]
-async fn greet(name: web::Path<String>) -> impl Responder {
-    format!("Hello {name}!")
-}
+mod routes;
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        App::new()
-            .service(greet)
-    })
-    .bind(("127.0.0.1", 8080))?
-    .run()
-    .await
+use routes::{root, js};
+
+#[tokio::main]
+async fn main() {
+
+    let router = Router::new()
+        .route("/", get(root))
+        .route("/index.js", get(js));
+
+    let server = Server::bind(&"127.0.0.1:8080".parse().unwrap())
+        .serve(router.into_make_service());
+
+    println!("{:?}", server.local_addr());;
+
+    server
+        .await
+        .unwrap();
 }
