@@ -5,19 +5,19 @@ use axum::{
 
 mod routes;
 
-use routes::{root, js};
+use routes::{root, js, lucky_number};
 
 #[tokio::main]
 async fn main() {
-
     let router = Router::new()
         .route("/", get(root))
-        .route("/index.js", get(js));
+        .route("/index.js", get(js))
+        .route("/api/lucky", get(lucky_number));
 
     let server = Server::bind(&"127.0.0.1:8080".parse().unwrap())
         .serve(router.into_make_service());
 
-    println!("{:?}", server.local_addr());;
+    println!("{:?}", server.local_addr());
 
     server
         .await

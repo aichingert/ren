@@ -1,7 +1,6 @@
 use axum::{
     http::Response,
     response::{Html, IntoResponse},
-    routing::get,
 };
 
 pub async fn root() -> impl IntoResponse {
@@ -21,4 +20,8 @@ pub async fn js() -> impl IntoResponse {
         .header("content-type", "application/javascript;charset=utf8")
         .body(js)
         .unwrap()
+}
+
+pub async fn lucky_number() -> impl IntoResponse {
+    "42"
 }
