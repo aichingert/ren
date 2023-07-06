@@ -9,3 +9,4 @@ edition = "2021"
 anyhow = "1.0.71"
 serde = "1.0.166"
 yew = { version = "0.20.0", features = ["csr"] }
+yew-router = "0.17.0"
