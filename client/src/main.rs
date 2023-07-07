@@ -1,5 +1,6 @@
 mod components;
 mod routes;
+mod types;
 use routes::{switch, AppRoute};
 
 use yew::prelude::*;

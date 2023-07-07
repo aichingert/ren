@@ -7,6 +7,8 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.71"
+gloo-console = "0.2.3"
 serde = "1.0.166"
+web-sys = "0.3.64"
 yew = { version = "0.20.0", features = ["csr"] }
 yew-router = "0.17.0"
