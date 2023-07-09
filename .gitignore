@@ -1,7 +1,0 @@
-**node_modules/
-**.next/
-**.idea
-**target
-**Cargo.lock
-**dist
-**.env
