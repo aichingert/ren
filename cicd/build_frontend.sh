@@ -31,4 +31,10 @@ git switch gh-pages
 rm -rf fron*
 rm -rf inde*
 
-# rm -rf "../dist"
+mv ../dist .
+mv dist/* .
+rm -rf dist
+
+git add .
+git commit -m "feat: updated gh-pages with cicd script"
+
