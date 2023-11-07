@@ -17,6 +17,7 @@ impl Recipes {
 #[derive(Clone)]
 pub struct Recipe {
     pub name: String,
+    pub image: String,
     pub stars: u8,
 }
 
@@ -24,6 +25,7 @@ impl Recipe {
     pub fn new(name: String, stars: u8) -> Self {
         Self {
             name,
+            image: "./butter_chicken.jpg".to_string(),
             stars,
         }
     }
