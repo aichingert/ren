@@ -8,13 +8,16 @@ use axum::{
 use serde::{Serialize, Deserialize};
 use sqlx::PgPool;
 
-use crate::model::Id;
-
 #[derive(Serialize, sqlx::FromRow)]
 pub struct Recipe {
     id: i16,
     name: String,
     image: String,
+}
+
+#[derive(sqlx::FromRow)]
+pub struct Id {
+    id: i16,
 }
 
 #[derive(Deserialize)]

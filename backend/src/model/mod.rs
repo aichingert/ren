@@ -1,6 +1,4 @@
 pub mod recipe;
+pub mod history;
 
-#[derive(sqlx::FromRow)]
-pub struct Id {
-    id: i16,
-}
+
