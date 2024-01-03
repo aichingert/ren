@@ -5,26 +5,13 @@ use axum::{
     http::StatusCode,
     Json
 };
-use serde::{Serialize, Deserialize};
 use sqlx::PgPool;
 
-#[derive(Serialize, sqlx::FromRow)]
-pub struct Recipe {
-    id: i16,
-    name: String,
-    image: String,
-}
-
-#[derive(sqlx::FromRow)]
-pub struct Id {
-    id: i16,
-}
-
-#[derive(Deserialize)]
-pub struct CreateRecipe {
-    name: String,
-    image: String,
-}
+use crate::models::recipe::{
+    Recipe,
+    Id,
+    CreateRecipe,
+};
 
 impl Recipe {
     pub async fn new(State(pool): State<PgPool>, Json(input): Json<CreateRecipe>) -> Response<Body> {
@@ -40,12 +27,6 @@ impl Recipe {
             Ok(Id { id }) => (StatusCode::CREATED, Json(Recipe::get_by_id(id, &pool).await.unwrap())).into_response(),
             Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
         }
-    }
-
-    async fn get_by_id(id: i16, pool: &PgPool) -> Result<Self, sqlx::Error> {
-        return sqlx::query_as!(Self, "SELECT * FROM recipe WHERE id = $1", id)
-            .fetch_one(pool)
-            .await
     }
 
     pub async fn get_by_id_api(State(pool): State<PgPool>, Path(id): Path<String>) -> Response<Body> {

@@ -4,8 +4,10 @@ use axum::{
 };
 use sqlx::postgres::PgPoolOptions;
 
-mod model;
-use model::{
+mod routes;
+mod models;
+
+use models::{
     recipe::Recipe,
     history::History,
 };
