@@ -1,5 +1,5 @@
 use axum::{
-    routing::{get, post},
+    routing::get,
     Router,
 };
 use sqlx::postgres::PgPoolOptions;
@@ -23,7 +23,8 @@ async fn main() -> Result<(), sqlx::Error> {
         .connect("postgresql://pg:pg@localhost:5432/cc").await?;
 
     let history_routes = Router::new()
-        .route("/", post(History::new));
+        .route("/", get(History::get_all).post(History::new))
+        .route("/:id", get(History::get_by_id_api));
 
     let recipe_routes = Router::new()
         .route("/", get(Recipe::get_all).post(Recipe::new))
