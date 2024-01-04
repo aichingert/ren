@@ -1,10 +1,7 @@
 use leptos::*;
 
-mod util;
-use util::recipe::{Recipes, Recipe};
-
-mod components;
-use components::{Home,RecipeView};
+mod home;
+use home::Home;
 
 fn main() {
     mount_to_body(|| view! {

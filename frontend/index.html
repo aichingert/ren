@@ -12,32 +12,23 @@
 				align-items: center;
 			}
 
-			.input {
-				display: flex;
-				justify-content: center;
-				align-items: center;
+			.home {
+				display: grid;
+				grid-template-rows: 15% 85%;
+				grid-template-columns: 25% 25% 25% 25%;
+				border-style: solid;
+			}
+
+			.header {
+				grid-column-start: 1;
+				grid-column-end: 5;
+				border-style: solid;
 			}
 
 			.recipes {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-			}
-
-			.recipe h2 {
-				color: #FFFFFF;
-			}
-
-			.recipe {
-				padding: 20px;
-				display: block;
-				box-sizing: content-box;
-				line-height: 16px;
-				margin: 10px;
-				border: solid #1e293b 1px;
-				min-width: 500px;
-				color: rgb(148, 163, 184);
-				text-align: center;
+				grid-column-start: 1;
+				grid-column-end: 4;
+				border-style: solid;
 			}
 		</style>
 		<!-- <link data-trunk rel="icon" type="image/ico" href="/public/favicon.ico"/> -->
