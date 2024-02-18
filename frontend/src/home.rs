@@ -8,16 +8,21 @@ pub fn Home() -> impl IntoView {
     view! {
         <div class="home">
             <div class="header">
-                <h1> Cooking-Center </h1>
+                <span style="color: rgb(137, 221, 255)">"<"</span>
+                <span style="color: rgb(240, 113, 120)">"Cooking-Center"</span>
+                <span style="color: rgb(137, 221, 255)">"/>"</span>
             </div>
 
             <div class="recipes">
                 <div>
-                   <h2> Recipe x </h2>
-                   <p> Description lorum ipsum </p>
-                   <p> IMAGE </p>
-                   <p> IMAGE </p>
-                   <p> IMAGE </p>
+                    <span style="color: rgb(137, 221, 255)">"<"</span>
+                    <span style="color: rgb(195, 232, 141)">"Recipe x"</span>
+                    <span style="color: rgb(137, 221, 255)">"/>"</span>
+
+                    <p> Description lorum ipsum </p>
+                    <p> IMAGE </p>
+                    <p> IMAGE </p>
+                    <p> IMAGE </p>
                 </div>
                 
                 <h2> Recipe x </h2>
