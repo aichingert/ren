@@ -1,0 +1,12 @@
+= Home cooking
+aichingert
+:toc:
+:toclevels:
+
+A website for my family
+
+== TODO
+
+* [ ] Setup keycloak
+* [ ] Basic backend
+* [ ] Basic frontend
