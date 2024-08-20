@@ -24,11 +24,11 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-    //bindings.linkLibary(lib);
-    _ = bindings;
+    bindings.linkLibrary(lib);
 
     const test_target = b.addTest(.{
         .root_source_file = b.path("ren.zig"),
     });
+    test_target.linkLibrary(lib);
     test_step.dependOn(&b.addRunArtifact(test_target).step);
 }
