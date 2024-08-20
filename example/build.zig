@@ -11,6 +11,14 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    const ren = b.dependency("ren", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    exe.linkLibCpp();
+
+    exe.root_module.addImport("ren", ren.module("ren"));
+
     b.installArtifact(exe);
 
     const run_cmd = b.addRunArtifact(exe);
