@@ -15,7 +15,7 @@ pub fn build(b: *std.Build) void {
 
     lib.addCSourceFiles(.{
         .root = b.path("src"),
-        .files = &.{"main.cpp"},
+        .files = &.{"ren.cpp"},
         .flags = &.{},
     });
 
