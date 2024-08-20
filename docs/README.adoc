@@ -5,4 +5,4 @@ aichingert
 :toclevels: 3
 :experimental:
 
-a simple webgpu graphics library, maybe going to make a simple game engine.
+a simple graphics library, maybe going to make a simple game engine.
