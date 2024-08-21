@@ -15,7 +15,7 @@ pub fn build(b: *std.Build) void {
 
     lib.addCSourceFiles(.{
         .root = b.path("src"),
-        .files = &.{"ren.cpp"},
+        .files = &sources,
         .flags = &.{},
     });
 
@@ -32,3 +32,7 @@ pub fn build(b: *std.Build) void {
     test_target.linkLibrary(lib);
     test_step.dependOn(&b.addRunArtifact(test_target).step);
 }
+
+const sources = [_][]const u8{
+    "ren.cpp",
+};
