@@ -2,7 +2,7 @@ const std = @import("std");
 const ren = @import("ren");
 
 pub fn main() !void {
-    ren.createWindow(1920, 1080, "example");
+    ren.initWindow(1920, 1080, "example");
 }
 
 test "simple test" {

@@ -15,6 +15,8 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    exe.linkSystemLibrary("glfw");
+    exe.linkSystemLibrary("vulkan");
     exe.linkLibCpp();
 
     exe.root_module.addImport("ren", ren.module("ren"));

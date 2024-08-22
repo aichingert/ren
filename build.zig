@@ -16,7 +16,18 @@ pub fn build(b: *std.Build) void {
     lib.addCSourceFiles(.{
         .root = b.path("src"),
         .files = &sources,
-        .flags = &.{},
+        .flags = &.{
+            "-std=c++17",
+            "-O2",
+            "-lglfw",
+            "-lvulkan",
+            "-ldl",
+            "-lpthread ",
+            "-lX11",
+            "-lXxf86vm",
+            "-lXrandr",
+            "-lXi",
+        },
     });
 
     const bindings = b.addModule("ren", .{
@@ -29,6 +40,8 @@ pub fn build(b: *std.Build) void {
     const test_target = b.addTest(.{
         .root_source_file = b.path("ren.zig"),
     });
+    test_target.linkSystemLibrary("glfw");
+    test_target.linkSystemLibrary("vulkan");
     test_target.linkLibrary(lib);
     test_step.dependOn(&b.addRunArtifact(test_target).step);
 }
