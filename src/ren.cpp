@@ -6,29 +6,52 @@
 #include <glm/mat4x4.hpp>
 
 #include <iostream>
+#include <vector>
 
-extern "C" void init_window(int width, int height, const char* title) {
+typedef struct {
+    GLFWwindow* window;
+    VkInstance instance;
+} t_ren;
+
+extern "C" t_ren init_window(int width, int height, const char* title) {
+    // INIT_WINDOW
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+    t_ren ren = {0};
+    ren.window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
-    std::cout << extensionCount << " extensions supported\n";
+    // INIT_VULKAN
+    VkApplicationInfo appInfo{};
+    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appInfo.pApplicationName = title;
+    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.pEngineName = "No Engine";
+    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.apiVersion = VK_API_VERSION_1_0;
 
-    glm::mat4 matrix;
-    glm::vec4 vec;
-    auto test = matrix * vec;
+    VkInstanceCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createInfo.pApplicationInfo = &appInfo;
 
-    /*
-    while(!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    createInfo.enabledExtensionCount = glfwExtensionCount;
+    createInfo.ppEnabledExtensionNames = glfwExtensions;
+    createInfo.enabledLayerCount = 0;
+
+    if (vkCreateInstance(&createInfo, nullptr, &ren.instance) != VK_SUCCESS) {
+        throw std::runtime_error("Failed  to create vk instance");
     }
-    */
 
-    glfwDestroyWindow(window);
+    return ren;
+}
 
+extern "C" void cleanup(t_ren* ren) {
+    vkDestroyInstance(ren->instance, nullptr);
+    glfwDestroyWindow(ren->window);
     glfwTerminate();
 }

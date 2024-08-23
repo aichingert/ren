@@ -1,8 +1,9 @@
 const std = @import("std");
-const ren = @import("ren");
+const Ren = @import("ren").Ren;
 
 pub fn main() !void {
-    ren.initWindow(1920, 1080, "example");
+    var ren = Ren.initWindow(1920, 1080, "example");
+    defer ren.deinit();
 }
 
 test "simple test" {
