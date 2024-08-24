@@ -8,22 +8,62 @@
 #include <iostream>
 #include <vector>
 
+const std::vector<const char*> validationLayers = {
+    "VK_LAYER_KHRONOS_validation",
+};
+
+#ifdef NDEBUG
+    const bool enableValidationLayers = false;
+#else
+    const bool enableValidationLayers = true;
+#endif
+
 typedef struct {
     GLFWwindow* window;
     VkInstance instance;
 } t_ren;
 
-extern "C" t_ren init_window(int width, int height, const char* title) {
-    // INIT_WINDOW
+void init_window(t_ren* ren, int width, int height, const char* title) {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    t_ren ren = {0};
-    ren.window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    ren->window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+}
 
-    // INIT_VULKAN
+bool areValidationLayerSupported() {
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+    std::vector<VkLayerProperties> availableLayers(layerCount);
+    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+    for (const char* layerName : validationLayers) {
+        bool layerFound = false;
+
+        for (const auto& layerProperties : availableLayers) {
+            if (strcmp(layerName, layerProperties.layerName) == 0) {
+                layerFound = true;
+                break;
+            }
+        }
+
+        if (!layerFound) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void init_vulkan(t_ren* ren, const char* title) {
+    // check validation layers
+    if (enableValidationLayers && !areValidationLayerSupported()) {
+        throw std::runtime_error("validation layers requested, but not available!");
+    }
+
+    // instance creation
     VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = title;
@@ -41,16 +81,28 @@ extern "C" t_ren init_window(int width, int height, const char* title) {
 
     createInfo.enabledExtensionCount = glfwExtensionCount;
     createInfo.ppEnabledExtensionNames = glfwExtensions;
-    createInfo.enabledLayerCount = 0;
+    if (enableValidationLayers) {
+        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+        createInfo.ppEnabledLayerNames = validationLayers.data();
+    } else {
+        createInfo.enabledLayerCount = 0;
+    }
 
-    if (vkCreateInstance(&createInfo, nullptr, &ren.instance) != VK_SUCCESS) {
+    if (vkCreateInstance(&createInfo, nullptr, &ren->instance) != VK_SUCCESS) {
         throw std::runtime_error("Failed  to create vk instance");
     }
+}
+
+extern "C" t_ren ren_init(int width, int height, const char* title) {
+    t_ren ren = {0};
+
+    init_window(&ren, width, height, title);
+    init_vulkan(&ren, title);
 
     return ren;
 }
 
-extern "C" void cleanup(t_ren* ren) {
+extern "C" void ren_destroy(t_ren* ren) {
     vkDestroyInstance(ren->instance, nullptr);
     glfwDestroyWindow(ren->window);
     glfwTerminate();

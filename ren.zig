@@ -9,8 +9,8 @@ const t_ren = extern struct {
     instance: glfw.VkInstance,
 };
 
-extern fn init_window(width: c_int, height: c_int, title: [*c]u8) t_ren;
-extern fn cleanup(ren: *t_ren) void;
+extern fn ren_init(width: c_int, height: c_int, title: [*c]u8) t_ren;
+extern fn ren_destroy(ren: *t_ren) void;
 
 pub const Ren = struct {
     window: ?*glfw.GLFWwindow,
@@ -18,8 +18,8 @@ pub const Ren = struct {
 
     const Self = @This();
 
-    pub fn initWindow(width: i32, height: i32, title: []const u8) Self {
-        const cpp_ren = init_window(
+    pub fn init(width: i32, height: i32, title: []const u8) Self {
+        const cpp_ren = ren_init(
             @intCast(width),
             @intCast(height),
             @as([*c]u8, @constCast(@alignCast(title))),
@@ -32,11 +32,11 @@ pub const Ren = struct {
     }
 
     pub fn deinit(self: *Self) void {
-        cleanup(@as(*t_ren, @ptrCast(@alignCast(self))));
+        ren_destroy(@as(*t_ren, @ptrCast(@alignCast(self))));
     }
 };
 
 test "can access extern fn" {
-    const ren = Ren.initWindow(10, 20, "example");
-    defer ren.deinit();
+    var ren = Ren.init(10, 20, "example");
+    ren.deinit();
 }
