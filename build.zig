@@ -17,7 +17,6 @@ pub fn build(b: *std.Build) void {
         .root = b.path("src"),
         .files = &sources,
         .flags = &.{
-            "-std=c++17",
             "-O2",
             "-lglfw",
             "-lvulkan",
@@ -48,4 +47,5 @@ pub fn build(b: *std.Build) void {
 
 const sources = [_][]const u8{
     "ren.cpp",
+    //"vulkan/instance.cpp",
 };
