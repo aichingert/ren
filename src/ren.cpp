@@ -1,16 +1,16 @@
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp>
+//#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+//#include <glm/vec4.hpp>
+//#include <glm/mat4x4.hpp>
 
 #include "ren.h"
 #include "window.cpp"
-#include "vulkan/instance.cpp"
+#include "vulkan/vulkan.cpp"
 
 extern "C" t_ren ren_init(int width, int height, const char* title) {
     t_ren ren = {0};
 
-    window::init_glfw(&ren, width, height, title);
-    vk::init_instance(&ren, title);
+    window::init(&ren, width, height, title);
+    vk::init(&ren, title);
 
     return ren;
 }

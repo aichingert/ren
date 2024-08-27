@@ -2,7 +2,7 @@
 
 namespace window {
 
-void init_glfw(t_ren* ren, int width, int height, const char* title) {
+void init(t_ren* ren, int width, int height, const char* title) {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);

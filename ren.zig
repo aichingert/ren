@@ -6,7 +6,9 @@ const glfw = @cImport({
 
 const t_ren = extern struct {
     window: ?*glfw.GLFWwindow,
+
     instance: glfw.VkInstance,
+    device: glfw.VkPhysicalDevice,
 };
 
 extern fn ren_init(width: c_int, height: c_int, title: [*c]u8) t_ren;
@@ -14,7 +16,9 @@ extern fn ren_destroy(ren: *t_ren) void;
 
 pub const Ren = struct {
     window: ?*glfw.GLFWwindow,
+
     instance: glfw.VkInstance,
+    device: glfw.VkPhysicalDevice,
 
     const Self = @This();
 
@@ -28,6 +32,7 @@ pub const Ren = struct {
         return .{
             .window = cpp_ren.window,
             .instance = cpp_ren.instance,
+            .device = cpp_ren.device,
         };
     }
 

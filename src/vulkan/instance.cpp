@@ -1,7 +1,3 @@
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp>
-
 #include <iostream>
 #include <vector>
 
@@ -9,34 +5,34 @@
 
 namespace vk {
 
-const std::vector<const char*> validationLayers = {
+const std::vector<const char*> VALIDATION_LAYERS = {
     "VK_LAYER_KHRONOS_validation",
 };
 
 #ifdef NDEBUG
-    const bool enableValidationLayers = false;
+    const bool ENABLE_VALIDATION_LAYERS = false;
 #else
-    const bool enableValidationLayers = true;
+    const bool ENABLE_VALIDATION_LAYERS = true;
 #endif
 
-bool areValidationLayerSupported() {
-    uint32_t layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+bool are_validation_layers_supported() {
+    uint32_t layer_count;
+    vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
 
-    std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+    std::vector<VkLayerProperties> available_layers(layer_count);
+    vkEnumerateInstanceLayerProperties(&layer_count, available_layers.data());
 
-    for (const char* layerName : validationLayers) {
-        bool layerFound = false;
+    for (const char* layer_name : VALIDATION_LAYERS) {
+        bool layer_found = false;
 
-        for (const auto& layerProperties : availableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
-                layerFound = true;
+        for (const auto& layer_properties : available_layers) {
+            if (strcmp(layer_name, layer_properties.layerName) == 0) {
+                layer_found = true;
                 break;
             }
         }
 
-        if (!layerFound) {
+        if (!layer_found) {
             return false;
         }
     }
@@ -46,36 +42,36 @@ bool areValidationLayerSupported() {
 
 void init_instance(t_ren* ren, const char* title) {
     // check validation layers
-    if (enableValidationLayers && !areValidationLayerSupported()) {
+    if (ENABLE_VALIDATION_LAYERS && !are_validation_layers_supported()) {
         throw std::runtime_error("validation layers requested, but not available!");
     }
 
     // instance creation
-    VkApplicationInfo appInfo{};
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = title;
-    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.pEngineName = "No Engine";
-    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_0;
+    VkApplicationInfo app_info{};
+    app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    app_info.pApplicationName = title;
+    app_info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+    app_info.pEngineName = "No Engine";
+    app_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+    app_info.apiVersion = VK_API_VERSION_1_0;
 
-    VkInstanceCreateInfo createInfo{};
-    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    createInfo.pApplicationInfo = &appInfo;
+    VkInstanceCreateInfo create_info{};
+    create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    create_info.pApplicationInfo = &app_info;
 
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    uint32_t glfw_extension_count = 0;
+    const char** glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
 
-    createInfo.enabledExtensionCount = glfwExtensionCount;
-    createInfo.ppEnabledExtensionNames = glfwExtensions;
-    if (enableValidationLayers) {
-        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-        createInfo.ppEnabledLayerNames = validationLayers.data();
+    create_info.enabledExtensionCount = glfw_extension_count;
+    create_info.ppEnabledExtensionNames = glfw_extensions;
+    if (ENABLE_VALIDATION_LAYERS) {
+        create_info.enabledLayerCount = static_cast<uint32_t>(VALIDATION_LAYERS.size());
+        create_info.ppEnabledLayerNames = VALIDATION_LAYERS.data();
     } else {
-        createInfo.enabledLayerCount = 0;
+        create_info.enabledLayerCount = 0;
     }
 
-    if (vkCreateInstance(&createInfo, nullptr, &ren->instance) != VK_SUCCESS) {
+    if (vkCreateInstance(&create_info, nullptr, &ren->instance) != VK_SUCCESS) {
         throw std::runtime_error("Failed  to create vk instance");
     }
 }
