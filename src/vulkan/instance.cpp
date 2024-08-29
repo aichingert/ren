@@ -1,19 +1,10 @@
-#include <iostream>
+#include <cstring>
+#include <stdexcept>
 #include <vector>
 
 #include "vulkan.h"
 
 namespace vk {
-
-const std::vector<const char*> VALIDATION_LAYERS = {
-    "VK_LAYER_KHRONOS_validation",
-};
-
-#ifdef NDEBUG
-    const bool ENABLE_VALIDATION_LAYERS = false;
-#else
-    const bool ENABLE_VALIDATION_LAYERS = true;
-#endif
 
 bool are_validation_layers_supported() {
     uint32_t layer_count;
@@ -26,7 +17,7 @@ bool are_validation_layers_supported() {
         bool layer_found = false;
 
         for (const auto& layer_properties : available_layers) {
-            if (strcmp(layer_name, layer_properties.layerName) == 0) {
+            if (std::strcmp(layer_name, layer_properties.layerName) == 0) {
                 layer_found = true;
                 break;
             }

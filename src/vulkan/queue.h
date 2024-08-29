@@ -1,10 +1,11 @@
+#ifndef QUEUE_H
+#define QUEUE_H
+
 #include <vector>
 
 #include "vulkan.h"
 
-namespace vk {
-
-QueueFamilyIndices find_queue_families(VkPhysicalDevice device) {
+QueueFamilyIndices find_queue_families(t_ren* ren, VkPhysicalDevice device) {
     QueueFamilyIndices indices;
 
     uint32_t queue_family_count = 0;
@@ -13,13 +14,21 @@ QueueFamilyIndices find_queue_families(VkPhysicalDevice device) {
     std::vector<VkQueueFamilyProperties> queue_families(queue_family_count);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, queue_families.data());
 
-    for (int i = 0; i < queue_family_count && !indices.graphics_family.has_value(); i++) {
+    for (int i = 0; i < queue_family_count && !indices.is_complete(); i++) {
         if (queue_families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphics_family = i;
+        }
+
+        VkBool32 present_support = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, ren->surface, &present_support);
+
+        if (present_support) {
+            indices.present_family = i;
         }
     }
 
     return indices;
 }
 
-}
+#endif /* QUEUE_H */
+

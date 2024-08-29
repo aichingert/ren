@@ -16,7 +16,9 @@ extern "C" t_ren ren_init(int width, int height, const char* title) {
 }
 
 extern "C" void ren_destroy(t_ren* ren) {
+    vkDestroySwapchainKHR(ren->device, ren->swap_chain, nullptr);
     vkDestroyDevice(ren->device, nullptr);
+    vkDestroySurfaceKHR(ren->instance,ren->surface, nullptr);
     vkDestroyInstance(ren->instance, nullptr);
     glfwDestroyWindow(ren->window);
     glfwTerminate();

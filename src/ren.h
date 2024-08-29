@@ -7,10 +7,20 @@
 typedef struct {
     GLFWwindow* window;
 
-    VkDevice            device;
     VkInstance          instance;
-    VkQueue             graphics_queue;
+    VkSurfaceKHR        surface;
+
+    VkDevice            device;
     VkPhysicalDevice    physical_device;
+
+    VkQueue             present_queue;
+    VkQueue             graphics_queue;
+
+    VkSwapchainKHR      swap_chain;
+    VkImage*            swap_chain_images;
+    size_t              swap_chain_images_size;
+    VkFormat            swap_chain_format;
+    VkExtent2D          swap_chain_extent;    
 } t_ren;
 
 extern "C" {
