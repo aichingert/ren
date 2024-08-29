@@ -17,10 +17,15 @@ const t_ren = extern struct {
     present_queue: glfw.VkQueue,
 
     swap_chain: glfw.VkSwapchainKHR,
+    swap_chain_extent: glfw.VkExtent2D,
     swap_chain_images: ?*glfw.VkImage,
+    swap_chain_image_views: ?*glfw.VkImageView,
     swap_chain_images_size: usize,
     swap_chain_format: glfw.VkFormat,
-    swap_chain_extent: glfw.VkExtent2D,
+
+    render_pass: glfw.VkRenderPass,
+    pipeline_layout: glfw.VkPipelineLayout,
+    graphics_pipeline: glfw.VkPipeline,
 };
 
 extern fn ren_init(width: c_int, height: c_int, title: [*c]u8) t_ren;
@@ -32,14 +37,12 @@ pub const Ren = struct {
     const Self = @This();
 
     pub fn init(width: i32, height: i32, title: []const u8) Self {
-        const c_ren = ren_init(
-            @intCast(width),
-            @intCast(height),
-            @as([*c]u8, @constCast(@alignCast(title))),
-        );
-
         return .{
-            .ren = c_ren,
+            .ren = ren_init(
+                @intCast(width),
+                @intCast(height),
+                @as([*c]u8, @constCast(@alignCast(title))),
+            ),
         };
     }
 

@@ -17,10 +17,15 @@ typedef struct {
     VkQueue             graphics_queue;
 
     VkSwapchainKHR      swap_chain;
+    VkExtent2D          swap_chain_extent;
     VkImage*            swap_chain_images;
+    VkImageView*        swap_chain_image_views;
     size_t              swap_chain_images_size;
-    VkFormat            swap_chain_format;
-    VkExtent2D          swap_chain_extent;    
+    VkFormat            swap_chain_image_format;
+
+    VkRenderPass        render_pass;
+    VkPipelineLayout    pipeline_layout;
+    VkPipeline          graphics_pipeline;
 } t_ren;
 
 extern "C" {

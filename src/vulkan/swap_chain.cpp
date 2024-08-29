@@ -1,3 +1,4 @@
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 #include <limits>
@@ -60,6 +61,32 @@ VkExtent2D choose_swap_extent(t_ren* ren, const VkSurfaceCapabilitiesKHR& capabi
     return actual_extent;
 }
 
+void init_image_views(t_ren* ren) {
+    ren->swap_chain_image_views = static_cast<VkImageView*>(malloc(sizeof(VkImageView) * ren->swap_chain_images_size));
+
+    for (size_t i = 0; i < ren->swap_chain_images_size; i++) {
+        VkImageViewCreateInfo create_info{};
+        create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        create_info.image = ren->swap_chain_images[i];
+        create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        create_info.format = ren->swap_chain_image_format;
+        create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+        create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        create_info.subresourceRange.baseMipLevel = 0;
+        create_info.subresourceRange.levelCount = 1;
+        create_info.subresourceRange.baseArrayLayer = 0;
+        create_info.subresourceRange.layerCount = 1;
+
+        if (vkCreateImageView(ren->device, &create_info, nullptr, &ren->swap_chain_image_views[i]) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create image view!");
+        }
+    }
+}
+
 void init_swap_chain(t_ren* ren) {
     SwapChainSupportDetails swap_chain_support = query_swap_chain_support(ren, ren->physical_device);
     VkSurfaceFormatKHR surface_format = choose_swap_surface_format(swap_chain_support.formats);
@@ -108,13 +135,14 @@ void init_swap_chain(t_ren* ren) {
     }
 
     vkGetSwapchainImagesKHR(ren->device, ren->swap_chain, &image_count, nullptr);
-    std::vector<VkImage> swap_chain_images(image_count);
-    vkGetSwapchainImagesKHR(ren->device, ren->swap_chain, &image_count, swap_chain_images.data());
+    ren->swap_chain_images_size = image_count;
+    ren->swap_chain_images = static_cast<VkImage*>(malloc(sizeof(VkImage) * image_count));
+    vkGetSwapchainImagesKHR(ren->device, ren->swap_chain, &image_count, ren->swap_chain_images);
 
-    ren->swap_chain_images = swap_chain_images.data();
-    ren->swap_chain_images_size = swap_chain_images.size();
-    ren->swap_chain_format = surface_format.format;
+    ren->swap_chain_image_format = surface_format.format;
     ren->swap_chain_extent = extent;
+
+    init_image_views(ren);
 }
 
 void init_surface(t_ren* ren) {
