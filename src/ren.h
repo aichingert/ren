@@ -7,8 +7,10 @@
 typedef struct {
     GLFWwindow* window;
 
+    VkDevice            device;
     VkInstance          instance;
-    VkPhysicalDevice    device;
+    VkQueue             graphics_queue;
+    VkPhysicalDevice    physical_device;
 } t_ren;
 
 extern "C" {
