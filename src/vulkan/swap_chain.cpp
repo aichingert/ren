@@ -61,8 +61,37 @@ VkExtent2D choose_swap_extent(t_ren* ren, const VkSurfaceCapabilitiesKHR& capabi
     return actual_extent;
 }
 
+void init_framebuffers(t_ren* ren) {
+    size_t size = sizeof(VkFramebuffer) * ren->swap_chain_images_size;
+    ren->swap_chain_framebuffers = static_cast<VkFramebuffer*>(malloc(size));
+
+    for (size_t i = 0; i < ren->swap_chain_images_size; i++) {
+        VkImageView attachments[] = {ren->swap_chain_image_views[i]};
+
+        VkFramebufferCreateInfo framebuffer_info{};
+        framebuffer_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebuffer_info.renderPass = ren->render_pass;
+        framebuffer_info.attachmentCount = 1;
+        framebuffer_info.pAttachments = attachments;
+        framebuffer_info.width = ren->swap_chain_extent.width;
+        framebuffer_info.height = ren->swap_chain_extent.height;
+        framebuffer_info.layers = 1;
+
+        VkResult result = vkCreateFramebuffer(
+                ren->device, 
+                &framebuffer_info, 
+                nullptr, 
+                &ren->swap_chain_framebuffers[i]);
+
+        if (result != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create framebuffer!");
+        }
+    }
+}
+
 void init_image_views(t_ren* ren) {
-    ren->swap_chain_image_views = static_cast<VkImageView*>(malloc(sizeof(VkImageView) * ren->swap_chain_images_size));
+    size_t size = sizeof(VkImageView) * ren->swap_chain_images_size;
+    ren->swap_chain_image_views = static_cast<VkImageView*>(malloc(size));
 
     for (size_t i = 0; i < ren->swap_chain_images_size; i++) {
         VkImageViewCreateInfo create_info{};
@@ -110,7 +139,7 @@ void init_swap_chain(t_ren* ren) {
     create_info.imageArrayLayers = 1;
     create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-    QueueFamilyIndices indices = find_queue_families(ren, ren->physical_device);
+    t_queue_family_indices indices = find_queue_families(ren, ren->physical_device);
     uint32_t queue_family_indices[] = {
         indices.graphics_family.value(),
         indices.present_family.value()

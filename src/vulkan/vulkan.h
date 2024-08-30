@@ -16,7 +16,7 @@ const std::vector<const char*> VALIDATION_LAYERS = {
     const bool ENABLE_VALIDATION_LAYERS = true;
 #endif
 
-struct QueueFamilyIndices {
+struct t_queue_family_indices {
     std::optional<uint32_t> present_family;
     std::optional<uint32_t> graphics_family;
 

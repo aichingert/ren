@@ -5,8 +5,8 @@
 
 #include "vulkan.h"
 
-QueueFamilyIndices find_queue_families(t_ren* ren, VkPhysicalDevice device) {
-    QueueFamilyIndices indices;
+t_queue_family_indices find_queue_families(t_ren* ren, VkPhysicalDevice device) {
+    t_queue_family_indices indices;
 
     uint32_t queue_family_count = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);

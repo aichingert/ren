@@ -21,15 +21,25 @@ const t_ren = extern struct {
     swap_chain_images: ?*glfw.VkImage,
     swap_chain_image_views: ?*glfw.VkImageView,
     swap_chain_images_size: usize,
-    swap_chain_format: glfw.VkFormat,
+    swap_chain_framebuffers: ?*glfw.VkFramebuffer,
+    swap_chain_image_format: glfw.VkFormat,
 
     render_pass: glfw.VkRenderPass,
     pipeline_layout: glfw.VkPipelineLayout,
     graphics_pipeline: glfw.VkPipeline,
+
+    command_pool: glfw.VkCommandPool,
+    command_buffer: glfw.VkCommandBuffer,
+
+    in_flight_fence: glfw.VkFence,
+    image_available_semaphore: glfw.VkSemaphore,
+    render_finished_semaphore: glfw.VkSemaphore,
 };
 
 extern fn ren_init(width: c_int, height: c_int, title: [*c]u8) t_ren;
 extern fn ren_destroy(ren: *t_ren) void;
+
+extern fn ren_draw_frame(ren: *t_ren) void;
 
 pub const Ren = struct {
     ren: t_ren,
@@ -44,6 +54,10 @@ pub const Ren = struct {
                 @as([*c]u8, @constCast(@alignCast(title))),
             ),
         };
+    }
+
+    pub fn drawFrame(self: *Self) void {
+        ren_draw_frame(&self.ren);
     }
 
     pub fn deinit(self: *Self) void {

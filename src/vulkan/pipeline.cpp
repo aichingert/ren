@@ -26,12 +26,22 @@ void init_render_pass(t_ren* ren) {
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments = &color_attachment_ref;
 
+    VkSubpassDependency dependency{};
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcAccessMask = 0;
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
     VkRenderPassCreateInfo render_pass_info{};
     render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     render_pass_info.attachmentCount = 1;
     render_pass_info.pAttachments = &color_attachment;
     render_pass_info.subpassCount = 1;
     render_pass_info.pSubpasses = &subpass;
+    render_pass_info.dependencyCount = 1;
+    render_pass_info.pDependencies = &dependency;
 
     VkResult result = vkCreateRenderPass(
             ren->device, 
@@ -82,6 +92,16 @@ void init_graphics_pipeline(t_ren* ren) {
         vert_shader_stage_info, 
         frag_shader_stage_info
     };
+
+    std::vector<VkDynamicState> dynamic_states = {
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR
+    };
+
+    VkPipelineDynamicStateCreateInfo dynamic_state{};
+    dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO; 
+    dynamic_state.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
+    dynamic_state.pDynamicStates = dynamic_states.data();
 
     VkPipelineVertexInputStateCreateInfo vertex_input_info{};
     vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -163,7 +183,7 @@ void init_graphics_pipeline(t_ren* ren) {
     pipeline_info.pRasterizationState = &rasterizer;
     pipeline_info.pMultisampleState = &multisampling;
     pipeline_info.pColorBlendState = &color_blending;
-    pipeline_info.pDynamicState = nullptr;
+    pipeline_info.pDynamicState = &dynamic_state;
     pipeline_info.layout = ren->pipeline_layout;
     pipeline_info.renderPass = ren->render_pass;
     pipeline_info.subpass = 0;

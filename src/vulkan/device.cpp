@@ -32,7 +32,7 @@ bool check_device_extension_support(VkPhysicalDevice device) {
 }
 
 bool is_device_suitable(t_ren* ren, VkPhysicalDevice device) {
-    QueueFamilyIndices indices = find_queue_families(ren, device);
+    t_queue_family_indices indices = find_queue_families(ren, device);
 
     bool extensions_supported = check_device_extension_support(device);
     bool swap_chain_adequate = false;
@@ -72,7 +72,7 @@ void pick_physical_device(t_ren* ren) {
 }
 
 void create_logical_device(t_ren* ren) {
-    QueueFamilyIndices indices = find_queue_families(ren, ren->physical_device);
+    t_queue_family_indices indices = find_queue_families(ren, ren->physical_device);
 
     std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
     std::set<uint32_t> unique_queue_families = { 
