@@ -2,12 +2,12 @@ const std = @import("std");
 const Ren = @import("ren").Ren;
 
 pub fn main() !void {
-    var ren = Ren.init(200, 100, "example");
+    var ren = Ren.init(150, 150, "example");
     defer ren.deinit();
 
     var counter: u64 = 0;
 
-    while (counter < 100) : (counter += 1) {
+    while (counter < 1000) : (counter += 1) {
         ren.drawFrame();
     }
 }

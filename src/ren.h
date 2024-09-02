@@ -4,6 +4,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+const int MAX_FRAMES_IN_FLIGHT = 2;
+
 typedef struct {
     GLFWwindow* window;
 
@@ -29,11 +31,13 @@ typedef struct {
     VkPipeline          graphics_pipeline;
 
     VkCommandPool       command_pool;
-    VkCommandBuffer     command_buffer;
+    VkCommandBuffer*    command_buffers;
 
-    VkFence             in_flight_fence;
-    VkSemaphore         image_available_semaphore;
-    VkSemaphore         render_finished_semaphore;
+    VkFence*            in_flight_fences;
+    VkSemaphore*        image_available_semaphores;
+    VkSemaphore*        render_finished_semaphores;
+
+    uint32_t            current_frame;
 } t_ren;
 
 extern "C" {

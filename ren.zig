@@ -29,11 +29,13 @@ const t_ren = extern struct {
     graphics_pipeline: glfw.VkPipeline,
 
     command_pool: glfw.VkCommandPool,
-    command_buffer: glfw.VkCommandBuffer,
+    command_buffers: ?*glfw.VkCommandBuffer,
 
-    in_flight_fence: glfw.VkFence,
-    image_available_semaphore: glfw.VkSemaphore,
-    render_finished_semaphore: glfw.VkSemaphore,
+    in_flight_fences: ?*glfw.VkFence,
+    image_available_semaphores: ?*glfw.VkSemaphore,
+    render_finished_semaphores: ?*glfw.VkSemaphore,
+
+    current_frame: c_uint,
 };
 
 extern fn ren_init(width: c_int, height: c_int, title: [*c]u8) t_ren;

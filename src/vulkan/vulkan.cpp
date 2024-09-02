@@ -76,9 +76,12 @@ void init(t_ren* ren, const char* title) {
     alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     alloc_info.commandPool = ren->command_pool;
     alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    alloc_info.commandBufferCount = 1;
+    alloc_info.commandBufferCount = MAX_FRAMES_IN_FLIGHT;
 
-    if (vkAllocateCommandBuffers(ren->device, &alloc_info, &ren->command_buffer) != VK_SUCCESS) {
+    size_t size = MAX_FRAMES_IN_FLIGHT * sizeof(VkCommandBuffer);
+    ren->command_buffers = static_cast<VkCommandBuffer*>(malloc(size));
+
+    if (vkAllocateCommandBuffers(ren->device, &alloc_info, ren->command_buffers) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create command buffers!");
     }
 
@@ -89,28 +92,32 @@ void init(t_ren* ren, const char* title) {
     fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     fence_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-    VkResult result = vkCreateSemaphore(
-            ren->device, 
-            &semaphore_info, 
-            nullptr, 
-            &ren->image_available_semaphore);
+    size_t fences_size = sizeof(VkFence) * MAX_FRAMES_IN_FLIGHT;
+    size_t semaphores_size = sizeof(VkSemaphore) * MAX_FRAMES_IN_FLIGHT;
 
-    if (result != VK_SUCCESS) {
-        throw std::runtime_error("failed to create semaphore!");
-    }
+    ren->in_flight_fences = static_cast<VkFence*>(malloc(fences_size));
+    ren->image_available_semaphores = static_cast<VkSemaphore*>(malloc(semaphores_size));
+    ren->render_finished_semaphores = static_cast<VkSemaphore*>(malloc(semaphores_size));
 
-    result = vkCreateSemaphore(
-            ren->device, 
-            &semaphore_info, 
-            nullptr, 
-            &ren->render_finished_semaphore);
-
-    if (result != VK_SUCCESS) {
-        throw std::runtime_error("failed to create semaphore!");
-    }
-
-    if (vkCreateFence(ren->device, &fence_info, nullptr, &ren->in_flight_fence) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create fence!");
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        if (vkCreateSemaphore(
+                ren->device, 
+                &semaphore_info, 
+                nullptr, 
+                &ren->image_available_semaphores[i]) != VK_SUCCESS ||
+            vkCreateSemaphore(
+                ren->device,
+                &semaphore_info,
+                nullptr,
+                &ren->render_finished_semaphores[i]) != VK_SUCCESS ||
+            vkCreateFence(
+                ren->device,
+                &fence_info,
+                nullptr,
+                &ren->in_flight_fences[i]) != VK_SUCCESS) 
+        {
+            throw std::runtime_error("Failed to create synchronization objects for a frame!");
+        }
     }
 }
 
