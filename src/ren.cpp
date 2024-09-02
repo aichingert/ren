@@ -22,15 +22,24 @@ extern "C" void ren_draw_frame(t_ren* ren) {
     vkResetFences(ren->device, 1, &ren->in_flight_fences[ren->current_frame]);
 
     uint32_t image_idx;
-    vkAcquireNextImageKHR(
-            ren->device, 
-            ren->swap_chain, 
-            UINT64_MAX, 
-            ren->image_available_semaphores[ren->current_frame], 
-            VK_NULL_HANDLE, 
-            &image_idx);
+    VkResult result = vkAcquireNextImageKHR(
+        ren->device, 
+        ren->swap_chain, 
+        UINT64_MAX, 
+        ren->image_available_semaphores[ren->current_frame], 
+        VK_NULL_HANDLE, 
+        &image_idx);
 
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        vk::recreate_swap_chain(ren);
+        return;
+    } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        throw std::runtime_error("Failed to aquire swap chain image!");
+    }
+
+    vkResetFences(ren->device, 1, &ren->in_flight_fences[ren->current_frame]);
     vkResetCommandBuffer(ren->command_buffers[ren->current_frame], 0);
+
     vk::record_command_buffer(ren, ren->command_buffers[ren->current_frame], image_idx);
 
     VkSubmitInfo submit_info{};
@@ -49,10 +58,10 @@ extern "C" void ren_draw_frame(t_ren* ren) {
     submit_info.pSignalSemaphores = signal_semaphores;
 
     if (vkQueueSubmit(
-                ren->graphics_queue, 
-                1, 
-                &submit_info, 
-                ren->in_flight_fences[ren->current_frame]) != VK_SUCCESS
+        ren->graphics_queue, 
+        1, 
+        &submit_info, 
+        ren->in_flight_fences[ren->current_frame]) != VK_SUCCESS
     ) {
         throw std::runtime_error("Failed to submit draw command buffer!");
     }
@@ -67,13 +76,26 @@ extern "C" void ren_draw_frame(t_ren* ren) {
     present_info.pSwapchains = swap_chains;
     present_info.pImageIndices = &image_idx;
 
-    vkQueuePresentKHR(ren->present_queue, &present_info);
+    result = vkQueuePresentKHR(ren->present_queue, &present_info);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        vk::recreate_swap_chain(ren);
+    } else if (result != VK_SUCCESS) {
+        throw std::runtime_error("Failed to present swap chain image!");
+    }
+
     ren->current_frame = (ren->current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
 extern "C" void ren_destroy(t_ren* ren) {
-    // NOTE: waiting for all semaphores
     vkDeviceWaitIdle(ren->device);
+
+    vk::destroy_swap_chain(ren); 
+
+    vkDestroyPipeline(ren->device, ren->graphics_pipeline, nullptr);
+    vkDestroyPipelineLayout(ren->device, ren->pipeline_layout, nullptr);
+
+    vkDestroyRenderPass(ren->device, ren->render_pass, nullptr); 
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(ren->device, ren->image_available_semaphores[i], nullptr);
@@ -82,20 +104,12 @@ extern "C" void ren_destroy(t_ren* ren) {
     }
 
     vkDestroyCommandPool(ren->device, ren->command_pool, nullptr);
-
-    for (size_t i = 0; i < ren->swap_chain_images_size; i++) {
-        vkDestroyFramebuffer(ren->device, ren->swap_chain_framebuffers[i], nullptr);
-        vkDestroyImageView(ren->device, ren->swap_chain_image_views[i], nullptr);
-    }
-
-    vkDestroyPipeline(ren->device, ren->graphics_pipeline, nullptr);
-    vkDestroyPipelineLayout(ren->device, ren->pipeline_layout, nullptr);
-    vkDestroyRenderPass(ren->device, ren->render_pass, nullptr); 
-
-    vkDestroySwapchainKHR(ren->device, ren->swap_chain, nullptr);
     vkDestroyDevice(ren->device, nullptr);
+
     vkDestroySurfaceKHR(ren->instance,ren->surface, nullptr);
     vkDestroyInstance(ren->instance, nullptr);
+
     glfwDestroyWindow(ren->window);
+
     glfwTerminate();
 }

@@ -170,14 +170,41 @@ void init_swap_chain(t_ren* ren) {
 
     ren->swap_chain_image_format = surface_format.format;
     ren->swap_chain_extent = extent;
-
-    init_image_views(ren);
 }
 
 void init_surface(t_ren* ren) {
     if (glfwCreateWindowSurface(ren->instance, ren->window, nullptr, &ren->surface) != VK_SUCCESS) {
         throw std::runtime_error("failed to create window surface!");
     }
+}
+
+void destroy_swap_chain(t_ren* ren) {
+    for (size_t i = 0; i < ren->swap_chain_images_size; i++) {
+        vkDestroyFramebuffer(ren->device, ren->swap_chain_framebuffers[i], nullptr);
+        vkDestroyImageView(ren->device, ren->swap_chain_image_views[i], nullptr);
+    }
+
+    vkDestroySwapchainKHR(ren->device, ren->swap_chain, nullptr);
+}
+
+void recreate_swap_chain(t_ren* ren) {
+    int width = 0;
+    int height = 0;
+
+    glfwGetFramebufferSize(ren->window, &width, &height);
+
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(ren->window, &width, &height);
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(ren->device);
+
+    destroy_swap_chain(ren);
+    
+    init_swap_chain(ren);
+    init_image_views(ren);
+    init_framebuffers(ren);
 }
 
 }
