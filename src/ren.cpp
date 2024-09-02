@@ -1,7 +1,3 @@
-//#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-//#include <glm/vec4.hpp>
-//#include <glm/mat4x4.hpp>
-
 #include "ren.h"
 #include "window.cpp"
 #include "vulkan/vulkan.cpp"
@@ -19,7 +15,6 @@ extern "C" t_ren ren_init(int width, int height, const char* title) {
 
 extern "C" void ren_draw_frame(t_ren* ren) {
     vkWaitForFences(ren->device, 1, &ren->in_flight_fences[ren->current_frame], VK_TRUE, UINT64_MAX);
-    vkResetFences(ren->device, 1, &ren->in_flight_fences[ren->current_frame]);
 
     uint32_t image_idx;
     VkResult result = vkAcquireNextImageKHR(
@@ -31,8 +26,7 @@ extern "C" void ren_draw_frame(t_ren* ren) {
         &image_idx);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-        vk::recreate_swap_chain(ren);
-        return;
+        return vk::recreate_swap_chain(ren);
     } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw std::runtime_error("Failed to aquire swap chain image!");
     }
@@ -91,6 +85,9 @@ extern "C" void ren_destroy(t_ren* ren) {
     vkDeviceWaitIdle(ren->device);
 
     vk::destroy_swap_chain(ren); 
+
+    vkDestroyBuffer(ren->device, ren->vertex_buffer, nullptr);
+    vkFreeMemory(ren->device, ren->vertex_buffer_memory, nullptr);
 
     vkDestroyPipeline(ren->device, ren->graphics_pipeline, nullptr);
     vkDestroyPipelineLayout(ren->device, ren->pipeline_layout, nullptr);

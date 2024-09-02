@@ -2,3 +2,5 @@
 **/zig-out
 **/index.html
 **/index.js
+
+**/*.spv

@@ -33,6 +33,9 @@ typedef struct {
     VkCommandPool       command_pool;
     VkCommandBuffer*    command_buffers;
 
+    VkBuffer            vertex_buffer;
+    VkDeviceMemory      vertex_buffer_memory;
+
     VkFence*            in_flight_fences;
     VkSemaphore*        image_available_semaphores;
     VkSemaphore*        render_finished_semaphores;

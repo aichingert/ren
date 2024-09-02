@@ -2,6 +2,7 @@
 
 #include "device.cpp"
 #include "instance.cpp"
+#include "vertex.cpp"
 #include "swap_chain.cpp"
 #include "pipeline.cpp"
 
@@ -44,7 +45,11 @@ void record_command_buffer(t_ren* ren, VkCommandBuffer command_buffer, uint32_t 
     scissor.extent = ren->swap_chain_extent;
     vkCmdSetScissor(command_buffer, 0, 1, &scissor);
 
-    vkCmdDraw(command_buffer, 3, 1, 0, 0);
+    VkBuffer vertex_buffers[] = {ren->vertex_buffer};
+    VkDeviceSize offsets[] = {0};
+    vkCmdBindVertexBuffers(command_buffer, 0, 1, vertex_buffers, offsets);
+
+    vkCmdDraw(command_buffer, static_cast<uint32_t>(VERTICES.size()), 1, 0, 0);
     vkCmdEndRenderPass(command_buffer);
 
     if (vkEndCommandBuffer(command_buffer) != VK_SUCCESS) {
@@ -73,6 +78,8 @@ void init(t_ren* ren, const char* title) {
     if (vkCreateCommandPool(ren->device, &pool_info, nullptr, &ren->command_pool) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create command pool!");
     }
+
+    init_vertex_buffer(ren);
 
     VkCommandBufferAllocateInfo alloc_info{};
     alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
