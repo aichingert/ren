@@ -2,7 +2,7 @@ const std = @import("std");
 const Ren = @import("ren").Ren;
 
 pub fn main() !void {
-    var ren = Ren.init(150, 150, "example");
+    var ren = Ren.init(300, 300, "example");
     defer ren.deinit();
 
     var counter: u64 = 0;

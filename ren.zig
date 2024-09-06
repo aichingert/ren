@@ -33,6 +33,8 @@ const t_ren = extern struct {
 
     vertex_buffer: glfw.VkBuffer,
     vertex_buffer_memory: glfw.VkDeviceMemory,
+    index_buffer: glfw.VkBuffer,
+    index_buffer_memory: glfw.VkDeviceMemory,
 
     in_flight_fences: ?*glfw.VkFence,
     image_available_semaphores: ?*glfw.VkSemaphore,

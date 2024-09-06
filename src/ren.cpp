@@ -86,6 +86,9 @@ extern "C" void ren_destroy(t_ren* ren) {
 
     vk::destroy_swap_chain(ren); 
 
+    vkDestroyBuffer(ren->device, ren->index_buffer, nullptr);
+    vkFreeMemory(ren->device, ren->index_buffer_memory, nullptr);
+
     vkDestroyBuffer(ren->device, ren->vertex_buffer, nullptr);
     vkFreeMemory(ren->device, ren->vertex_buffer_memory, nullptr);
 

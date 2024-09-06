@@ -2,7 +2,7 @@
 
 #include "device.cpp"
 #include "instance.cpp"
-#include "vertex.cpp"
+#include "buffers.cpp"
 #include "swap_chain.cpp"
 #include "pipeline.cpp"
 
@@ -49,7 +49,9 @@ void record_command_buffer(t_ren* ren, VkCommandBuffer command_buffer, uint32_t 
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(command_buffer, 0, 1, vertex_buffers, offsets);
 
-    vkCmdDraw(command_buffer, static_cast<uint32_t>(VERTICES.size()), 1, 0, 0);
+    vkCmdBindIndexBuffer(command_buffer, ren->index_buffer, 0, VK_INDEX_TYPE_UINT16);
+
+    vkCmdDrawIndexed(command_buffer, static_cast<uint32_t>(INDICES.size()), 1, 0, 0, 0);
     vkCmdEndRenderPass(command_buffer);
 
     if (vkEndCommandBuffer(command_buffer) != VK_SUCCESS) {
@@ -80,6 +82,7 @@ void init(t_ren* ren, const char* title) {
     }
 
     init_vertex_buffer(ren);
+    init_index_buffer(ren);
 
     VkCommandBufferAllocateInfo alloc_info{};
     alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
