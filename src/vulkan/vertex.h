@@ -5,6 +5,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+#include "vulkan.h"
+
 struct Vertex {
     glm::vec2 pos;
     glm::vec3 color;
@@ -39,7 +41,7 @@ struct UniformBufferObject {
     glm::mat4 model;
     glm::mat4 view;
     glm::mat4 proj;
-}
+};
 
 const std::vector<Vertex> VERTICES = {
     {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
