@@ -5,7 +5,7 @@
 #include <iostream>
 
 extern "C" t_ren ren_init(int width, int height, const char* title) {
-    t_ren ren = {0};
+    t_ren ren = {};
 
     window::init(&ren, width, height, title);
     vk::init(&ren, title);

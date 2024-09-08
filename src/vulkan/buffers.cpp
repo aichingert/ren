@@ -1,3 +1,6 @@
+#include <stdexcept>
+#include <cstring>
+
 #include "vulkan.h"
 #include "vertex.h"
 
