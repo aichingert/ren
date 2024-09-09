@@ -51,6 +51,15 @@ void record_command_buffer(t_ren* ren, VkCommandBuffer command_buffer, uint32_t 
 
     vkCmdBindIndexBuffer(command_buffer, ren->index_buffer, 0, VK_INDEX_TYPE_UINT16);
 
+    vkCmdBindDescriptorSets(
+            command_buffer, 
+            VK_PIPELINE_BIND_POINT_GRAPHICS, 
+            ren->pipeline_layout, 
+            0, 
+            1, 
+            &ren->descriptor_sets[ren->current_frame], 
+            0, 
+            nullptr);
     vkCmdDrawIndexed(command_buffer, static_cast<uint32_t>(INDICES.size()), 1, 0, 0, 0);
     vkCmdEndRenderPass(command_buffer);
 
@@ -67,6 +76,7 @@ void init(t_ren* ren, const char* title) {
     init_image_views(ren);
 
     init_render_pass(ren);
+    init_descriptor_set_layout(ren);
     init_graphics_pipeline(ren);
     init_framebuffers(ren);
 
@@ -83,6 +93,9 @@ void init(t_ren* ren, const char* title) {
 
     init_vertex_buffer(ren);
     init_index_buffer(ren);
+    init_uniform_buffers(ren);
+    init_descriptor_pool(ren);
+    init_descriptor_sets(ren);
 
     VkCommandBufferAllocateInfo alloc_info{};
     alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;

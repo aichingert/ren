@@ -151,4 +151,32 @@ void init_index_buffer(t_ren* ren) {
     vkFreeMemory(ren->device, staging_buffer_memory, nullptr);
 }
 
+void init_uniform_buffers(t_ren* ren) {
+    VkDeviceSize buffer_size = sizeof(UniformBufferObject);
+
+    ren->uniform_buffers = static_cast<VkBuffer*>(malloc(sizeof(VkBuffer) * MAX_FRAMES_IN_FLIGHT));
+    ren->uniform_buffers_mapped = static_cast<void**>(malloc(sizeof(void*) * MAX_FRAMES_IN_FLIGHT));
+    ren->uniform_buffers_memory = static_cast<VkDeviceMemory*>(
+        malloc(sizeof(VkDeviceMemory) * MAX_FRAMES_IN_FLIGHT)
+    );
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        create_buffer(
+                ren,
+                buffer_size, 
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                ren->uniform_buffers[i], 
+                ren->uniform_buffers_memory[i]);
+
+        vkMapMemory(
+                ren->device, 
+                ren->uniform_buffers_memory[i], 
+                0, 
+                buffer_size, 
+                0, 
+                &ren->uniform_buffers_mapped[i]);
+    }
+}
+
 }

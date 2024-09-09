@@ -1,16 +1,44 @@
 #include "ren.h"
 #include "window.cpp"
+#include "vulkan/vertex.h"
 #include "vulkan/vulkan.cpp"
 
-#include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
-extern "C" t_ren ren_init(int width, int height, const char* title) {
+#include <chrono>
+#include <cstring>
+
+extern "C" t_ren ren_init(uint32_t width, uint32_t height, const char* title) {
     t_ren ren = {};
 
     window::init(&ren, width, height, title);
     vk::init(&ren, title);
 
     return ren;
+}
+
+void update_uniform_buffer(t_ren* ren) {
+    static auto start = std::chrono::high_resolution_clock::now();
+    auto current = std::chrono::high_resolution_clock::now();
+
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(current - start).count();
+
+    UniformBufferObject ubo{};
+
+    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.view = glm::lookAt(
+            glm::vec3(2.0f, 2.0f, 2.0f),
+            glm::vec3(0.0f, 0.0f, 0.0f), 
+            glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.proj = glm::perspective(
+            glm::radians(45.0f), 
+            ren->swap_chain_extent.width / (float) ren->swap_chain_extent.height, 
+            0.1f, 
+            10.0f);
+    ubo.proj[1][1] *= -1;
+
+    memcpy(ren->uniform_buffers_mapped[ren->current_frame], &ubo, sizeof(ubo));
 }
 
 extern "C" void ren_draw_frame(t_ren* ren) {
@@ -31,9 +59,11 @@ extern "C" void ren_draw_frame(t_ren* ren) {
         throw std::runtime_error("Failed to aquire swap chain image!");
     }
 
-    vkResetFences(ren->device, 1, &ren->in_flight_fences[ren->current_frame]);
-    vkResetCommandBuffer(ren->command_buffers[ren->current_frame], 0);
+    update_uniform_buffer(ren);
 
+    vkResetFences(ren->device, 1, &ren->in_flight_fences[ren->current_frame]);
+
+    vkResetCommandBuffer(ren->command_buffers[ren->current_frame], 0);
     vk::record_command_buffer(ren, ren->command_buffers[ren->current_frame], image_idx);
 
     VkSubmitInfo submit_info{};
@@ -83,6 +113,14 @@ extern "C" void ren_draw_frame(t_ren* ren) {
 
 extern "C" void ren_destroy(t_ren* ren) {
     vkDeviceWaitIdle(ren->device);
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        vkDestroyBuffer(ren->device, ren->uniform_buffers[i], nullptr);
+        vkFreeMemory(ren->device, ren->uniform_buffers_memory[i], nullptr);
+    }
+
+    vkDestroyDescriptorPool(ren->device, ren->descriptor_pool, nullptr);
+    vkDestroyDescriptorSetLayout(ren->device, ren->descriptor_set_layout, nullptr);
 
     vk::destroy_swap_chain(ren); 
 

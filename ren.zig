@@ -25,6 +25,9 @@ const t_ren = extern struct {
     swap_chain_image_format: glfw.VkFormat,
 
     render_pass: glfw.VkRenderPass,
+    descriptor_set_layout: glfw.VkDescriptorSetLayout,
+    descriptor_pool: glfw.VkDescriptorPool,
+    descriptor_sets: ?*glfw.VkDescriptorSet,
     pipeline_layout: glfw.VkPipelineLayout,
     graphics_pipeline: glfw.VkPipeline,
 
@@ -36,6 +39,10 @@ const t_ren = extern struct {
     index_buffer: glfw.VkBuffer,
     index_buffer_memory: glfw.VkDeviceMemory,
 
+    uniform_buffers: ?*glfw.VkBuffer,
+    uniform_buffers_memory: ?*glfw.VkDeviceMemory,
+    uniform_buffers_mapped: ?**anyopaque,
+
     in_flight_fences: ?*glfw.VkFence,
     image_available_semaphores: ?*glfw.VkSemaphore,
     render_finished_semaphores: ?*glfw.VkSemaphore,
@@ -43,7 +50,7 @@ const t_ren = extern struct {
     current_frame: c_uint,
 };
 
-extern fn ren_init(width: c_int, height: c_int, title: [*c]u8) t_ren;
+extern fn ren_init(width: c_uint, height: c_uint, title: [*c]u8) t_ren;
 extern fn ren_destroy(ren: *t_ren) void;
 
 extern fn ren_draw_frame(ren: *t_ren) void;
@@ -53,7 +60,7 @@ pub const Ren = struct {
 
     const Self = @This();
 
-    pub fn init(width: i32, height: i32, title: []const u8) Self {
+    pub fn init(width: u32, height: u32, title: []const u8) Self {
         return .{
             .ren = ren_init(
                 @intCast(width),

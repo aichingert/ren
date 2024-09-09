@@ -7,6 +7,8 @@
 
 #include "vulkan.h"
 
+// TODO: fix naming convention
+
 struct Vertex {
     glm::vec2 pos;
     glm::vec3 color;
