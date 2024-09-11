@@ -1,6 +1,6 @@
 #include <stdexcept>
+#include <vulkan/vulkan_core.h>
 
-#include "vulkan.h"
 #include "vertex.h"
 
 #include "shaders.cpp"
@@ -45,9 +45,9 @@ void init_render_pass(t_ren* ren) {
     render_pass_info.pDependencies = &dependency;
 
     VkResult result = vkCreateRenderPass(
-            ren->device, 
-            &render_pass_info, 
-            nullptr, 
+            ren->device,
+            &render_pass_info,
+            nullptr,
             &ren->render_pass);
 
     if (result != VK_SUCCESS) {
@@ -82,9 +82,9 @@ void init_descriptor_set_layout(t_ren* ren) {
     layout_info.pBindings = &ubo_layout_binding;
 
     VkResult result = vkCreateDescriptorSetLayout(
-            ren->device, 
-            &layout_info, 
-            nullptr, 
+            ren->device,
+            &layout_info,
+            nullptr,
             &ren->descriptor_set_layout);
 
     if (result != VK_SUCCESS) {
@@ -104,10 +104,10 @@ void init_descriptor_pool(t_ren* ren) {
     pool_info.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
     if (vkCreateDescriptorPool(
-                ren->device, 
-                &pool_info, 
-                nullptr, 
-                &ren->descriptor_pool) != VK_SUCCESS) 
+                ren->device,
+                &pool_info,
+                nullptr,
+                &ren->descriptor_pool) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create descriptor pool!");
     }
@@ -168,7 +168,7 @@ void init_graphics_pipeline(t_ren* ren) {
     frag_shader_stage_info.pName = "main";
 
     VkPipelineShaderStageCreateInfo shader_stages[] = {
-        vert_shader_stage_info, 
+        vert_shader_stage_info,
         frag_shader_stage_info
     };
 
@@ -178,7 +178,7 @@ void init_graphics_pipeline(t_ren* ren) {
     };
 
     VkPipelineDynamicStateCreateInfo dynamic_state{};
-    dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO; 
+    dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     dynamic_state.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
     dynamic_state.pDynamicStates = dynamic_states.data();
 
@@ -221,7 +221,7 @@ void init_graphics_pipeline(t_ren* ren) {
     rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     rasterizer.depthClampEnable = VK_FALSE;
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
-    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
     rasterizer.lineWidth = 1.0f;
     rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
@@ -233,9 +233,9 @@ void init_graphics_pipeline(t_ren* ren) {
     multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
     VkPipelineColorBlendAttachmentState color_blend_attachment{};
-    color_blend_attachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT 
-        | VK_COLOR_COMPONENT_G_BIT 
-        | VK_COLOR_COMPONENT_B_BIT 
+    color_blend_attachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT
+        | VK_COLOR_COMPONENT_G_BIT
+        | VK_COLOR_COMPONENT_B_BIT
         | VK_COLOR_COMPONENT_A_BIT;
     color_blend_attachment.blendEnable = VK_FALSE;
 
@@ -251,9 +251,9 @@ void init_graphics_pipeline(t_ren* ren) {
     pipeline_layout_info.pSetLayouts = &ren->descriptor_set_layout;
 
     VkResult result = vkCreatePipelineLayout(
-            ren->device, 
-            &pipeline_layout_info, 
-            nullptr, 
+            ren->device,
+            &pipeline_layout_info,
+            nullptr,
             &ren->pipeline_layout);
 
     if (result != VK_SUCCESS) {
@@ -276,11 +276,11 @@ void init_graphics_pipeline(t_ren* ren) {
     pipeline_info.subpass = 0;
 
     result = vkCreateGraphicsPipelines(
-            ren->device, 
-            VK_NULL_HANDLE, 
-            1, 
-            &pipeline_info, 
-            nullptr, 
+            ren->device,
+            VK_NULL_HANDLE,
+            1,
+            &pipeline_info,
+            nullptr,
             &ren->graphics_pipeline);
 
     if (result != VK_SUCCESS) {

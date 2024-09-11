@@ -17,9 +17,9 @@ bool check_device_extension_support(VkPhysicalDevice device) {
 
     std::vector<VkExtensionProperties> available_extensions(extension_count);
     vkEnumerateDeviceExtensionProperties(
-            device, 
-            nullptr, 
-            &extension_count, 
+            device,
+            nullptr,
+            &extension_count,
             available_extensions.data());
 
     std::set<std::string> required_extensions(DEVICE_EXTENSIONS.begin(), DEVICE_EXTENSIONS.end());
@@ -39,7 +39,7 @@ bool is_device_suitable(t_ren* ren, VkPhysicalDevice device) {
 
     if (extensions_supported) {
         SwapChainSupportDetails swap_chain_support = query_swap_chain_support(ren, device);
-        swap_chain_adequate = !swap_chain_support.formats.empty() 
+        swap_chain_adequate = !swap_chain_support.formats.empty()
             && !swap_chain_support.present_modes.empty();
     }
 
@@ -75,9 +75,9 @@ void create_logical_device(t_ren* ren) {
     t_queue_family_indices indices = find_queue_families(ren, ren->physical_device);
 
     std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
-    std::set<uint32_t> unique_queue_families = { 
-        indices.graphics_family.value(), 
-        indices.present_family.value() 
+    std::set<uint32_t> unique_queue_families = {
+        indices.graphics_family.value(),
+        indices.present_family.value()
     };
 
     float queue_priority = 1.0f;
@@ -91,7 +91,9 @@ void create_logical_device(t_ren* ren) {
         queue_create_infos.push_back(queue_create_info);
     }
 
-    VkPhysicalDeviceFeatures device_features{};
+    VkPhysicalDeviceFeatures device_features{
+        .fillModeNonSolid = true,
+    };
 
     VkDeviceCreateInfo create_info{};
     create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

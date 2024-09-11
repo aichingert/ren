@@ -1,7 +1,6 @@
 #include <stdexcept>
 #include <cstring>
 
-#include "vulkan.h"
 #include "vertex.h"
 
 namespace vk {
@@ -23,10 +22,10 @@ uint32_t find_memory_type(t_ren* ren, uint32_t type_filter, VkMemoryPropertyFlag
 
 void create_buffer(
         t_ren* ren,
-        VkDeviceSize size, 
-        VkBufferUsageFlags usage, 
-        VkMemoryPropertyFlags properties, 
-        VkBuffer &buffer, 
+        VkDeviceSize size,
+        VkBufferUsageFlags usage,
+        VkMemoryPropertyFlags properties,
+        VkBuffer &buffer,
         VkDeviceMemory& buffer_memory
 ) {
     VkBufferCreateInfo buffer_info{};
@@ -58,7 +57,7 @@ void copy_buffer(t_ren* ren, VkBuffer src, VkBuffer dst, VkDeviceSize size) {
     VkCommandBufferAllocateInfo alloc_info{};
     alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    
+
     // TODO: create another command pool with VK_COMMAND_POOL_CREATE_TRANSIENT_BIT flag for perf.
     alloc_info.commandPool = ren->command_pool;
     alloc_info.commandBufferCount = 1;
@@ -94,10 +93,10 @@ void init_vertex_buffer(t_ren* ren) {
 
     create_buffer(
             ren,
-            buffer_size, 
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 
-            staging_buffer, 
+            buffer_size,
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            staging_buffer,
             staging_buffer_memory);
 
     void* data;
@@ -106,11 +105,11 @@ void init_vertex_buffer(t_ren* ren) {
     vkUnmapMemory(ren->device, staging_buffer_memory);
 
     create_buffer(
-            ren, 
-            buffer_size, 
-            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, 
+            ren,
+            buffer_size,
+            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-            ren->vertex_buffer, 
+            ren->vertex_buffer,
             ren->vertex_buffer_memory);
 
     copy_buffer(ren, staging_buffer, ren->vertex_buffer, buffer_size);
@@ -126,10 +125,10 @@ void init_index_buffer(t_ren* ren) {
     VkDeviceMemory staging_buffer_memory;
     create_buffer(
             ren,
-            buffer_size, 
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 
-            staging_buffer, 
+            buffer_size,
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            staging_buffer,
             staging_buffer_memory);
 
     void* data;
@@ -139,10 +138,10 @@ void init_index_buffer(t_ren* ren) {
 
     create_buffer(
             ren,
-            buffer_size, 
-            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, 
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 
-            ren->index_buffer, 
+            buffer_size,
+            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            ren->index_buffer,
             ren->index_buffer_memory);
 
     copy_buffer(ren, staging_buffer, ren->index_buffer, buffer_size);
@@ -163,18 +162,18 @@ void init_uniform_buffers(t_ren* ren) {
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         create_buffer(
                 ren,
-                buffer_size, 
+                buffer_size,
                 VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                ren->uniform_buffers[i], 
+                ren->uniform_buffers[i],
                 ren->uniform_buffers_memory[i]);
 
         vkMapMemory(
-                ren->device, 
-                ren->uniform_buffers_memory[i], 
-                0, 
-                buffer_size, 
-                0, 
+                ren->device,
+                ren->uniform_buffers_memory[i],
+                0,
+                buffer_size,
+                0,
                 &ren->uniform_buffers_mapped[i]);
     }
 }

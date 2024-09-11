@@ -1,4 +1,3 @@
-#include <iostream>
 #include <stdexcept>
 #include <vector>
 #include <limits>
@@ -78,9 +77,9 @@ void init_framebuffers(t_ren* ren) {
         framebuffer_info.layers = 1;
 
         VkResult result = vkCreateFramebuffer(
-                ren->device, 
-                &framebuffer_info, 
-                nullptr, 
+                ren->device,
+                &framebuffer_info,
+                nullptr,
                 &ren->swap_chain_framebuffers[i]);
 
         if (result != VK_SUCCESS) {
@@ -201,7 +200,7 @@ void recreate_swap_chain(t_ren* ren) {
     vkDeviceWaitIdle(ren->device);
 
     destroy_swap_chain(ren);
-    
+
     init_swap_chain(ren);
     init_image_views(ren);
     init_framebuffers(ren);
