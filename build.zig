@@ -47,5 +47,9 @@ pub fn build(b: *std.Build) void {
 
 const sources = [_][]const u8{
     "ren.cpp",
-    //"vulkan/instance.cpp",
+    "vulkan/sync.cpp",
+    "vulkan/queue.cpp",
+    "vulkan/buffers.cpp",
+    "vulkan/swap_chain.cpp",
+    "vulkan/command_buffer.cpp",
 };

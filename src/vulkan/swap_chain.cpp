@@ -4,10 +4,41 @@
 #include <cstdint>
 #include <algorithm>
 
-#include "vulkan.h"
 #include "queue.h"
+#include "swap_chain.h"
 
 namespace vk {
+
+swap_chain_support_details_t query_swap_chain_support(t_ren* ren, VkPhysicalDevice device) {
+    swap_chain_support_details_t details;
+
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, ren->surface, &details.capabilities);
+
+    uint32_t format_count;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, ren->surface, &format_count, nullptr);
+
+    if (format_count != 0) {
+        details.formats.resize(format_count);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(
+                device,
+                ren->surface,
+                &format_count, details.formats.data());
+    }
+
+    uint32_t present_mode_count;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, ren->surface, &present_mode_count, nullptr);
+
+    if (present_mode_count != 0) {
+        details.present_modes.resize(present_mode_count);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(
+                device,
+                ren->surface,
+                &present_mode_count,
+                details.present_modes.data());
+    }
+
+    return details;
+}
 
 VkSurfaceFormatKHR choose_swap_surface_format(
         const std::vector<VkSurfaceFormatKHR>& available_formats
@@ -116,7 +147,7 @@ void init_image_views(t_ren* ren) {
 }
 
 void init_swap_chain(t_ren* ren) {
-    SwapChainSupportDetails swap_chain_support = query_swap_chain_support(ren, ren->physical_device);
+    swap_chain_support_details_t swap_chain_support = query_swap_chain_support(ren, ren->physical_device);
     VkSurfaceFormatKHR surface_format = choose_swap_surface_format(swap_chain_support.formats);
     VkPresentModeKHR present_mode = choose_swap_present_mode(swap_chain_support.present_modes);
     VkExtent2D extent = choose_swap_extent(ren, swap_chain_support.capabilities);

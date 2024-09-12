@@ -5,9 +5,7 @@ pub fn main() !void {
     var ren = Ren.init(300, 300, "example");
     defer ren.deinit();
 
-    var counter: u64 = 0;
-
-    while (counter < 1000) : (counter += 1) {
+    while (true) {
         ren.drawFrame();
     }
 }

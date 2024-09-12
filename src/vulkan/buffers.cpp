@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <cstring>
 
-#include "vertex.h"
+#include "buffers.h"
 
 namespace vk {
 
@@ -20,7 +20,7 @@ uint32_t find_memory_type(t_ren* ren, uint32_t type_filter, VkMemoryPropertyFlag
     throw std::runtime_error("Failed to find suitable memory type!");
 }
 
-void create_buffer(
+void init_buffer(
         t_ren* ren,
         VkDeviceSize size,
         VkBufferUsageFlags usage,
@@ -91,7 +91,7 @@ void init_vertex_buffer(t_ren* ren) {
     VkBuffer staging_buffer;
     VkDeviceMemory staging_buffer_memory;
 
-    create_buffer(
+    init_buffer(
             ren,
             buffer_size,
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -104,7 +104,7 @@ void init_vertex_buffer(t_ren* ren) {
     memcpy(data, VERTICES.data(), (size_t)buffer_size);
     vkUnmapMemory(ren->device, staging_buffer_memory);
 
-    create_buffer(
+    init_buffer(
             ren,
             buffer_size,
             VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
@@ -123,7 +123,7 @@ void init_index_buffer(t_ren* ren) {
 
     VkBuffer staging_buffer;
     VkDeviceMemory staging_buffer_memory;
-    create_buffer(
+    init_buffer(
             ren,
             buffer_size,
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -136,7 +136,7 @@ void init_index_buffer(t_ren* ren) {
     memcpy(data, INDICES.data(), (size_t) buffer_size);
     vkUnmapMemory(ren->device, staging_buffer_memory);
 
-    create_buffer(
+    init_buffer(
             ren,
             buffer_size,
             VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
@@ -151,7 +151,7 @@ void init_index_buffer(t_ren* ren) {
 }
 
 void init_uniform_buffers(t_ren* ren) {
-    VkDeviceSize buffer_size = sizeof(UniformBufferObject);
+    VkDeviceSize buffer_size = sizeof(uniform_buffer_object_t);
 
     ren->uniform_buffers = static_cast<VkBuffer*>(malloc(sizeof(VkBuffer) * MAX_FRAMES_IN_FLIGHT));
     ren->uniform_buffers_mapped = static_cast<void**>(malloc(sizeof(void*) * MAX_FRAMES_IN_FLIGHT));
@@ -160,7 +160,7 @@ void init_uniform_buffers(t_ren* ren) {
     );
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        create_buffer(
+        init_buffer(
                 ren,
                 buffer_size,
                 VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,

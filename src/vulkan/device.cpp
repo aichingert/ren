@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "vulkan.h"
+#include "swap_chain.h"
 #include "queue.h"
 
 namespace vk {
@@ -38,7 +39,7 @@ bool is_device_suitable(t_ren* ren, VkPhysicalDevice device) {
     bool swap_chain_adequate = false;
 
     if (extensions_supported) {
-        SwapChainSupportDetails swap_chain_support = query_swap_chain_support(ren, device);
+        swap_chain_support_details_t swap_chain_support = query_swap_chain_support(ren, device);
         swap_chain_adequate = !swap_chain_support.formats.empty()
             && !swap_chain_support.present_modes.empty();
     }

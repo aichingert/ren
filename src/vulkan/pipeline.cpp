@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <vulkan/vulkan_core.h>
 
-#include "vertex.h"
+#include "buffers.h"
 
 #include "shaders.cpp"
 
@@ -132,7 +132,7 @@ void init_descriptor_sets(t_ren* ren) {
         VkDescriptorBufferInfo buffer_info{};
         buffer_info.buffer = ren->uniform_buffers[i];
         buffer_info.offset = 0;
-        buffer_info.range = sizeof(UniformBufferObject);
+        buffer_info.range = sizeof(uniform_buffer_object_t);
 
         VkWriteDescriptorSet descriptor_write{};
         descriptor_write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -182,8 +182,8 @@ void init_graphics_pipeline(t_ren* ren) {
     dynamic_state.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
     dynamic_state.pDynamicStates = dynamic_states.data();
 
-    auto binding_description = Vertex::get_binding_description();
-    auto attribute_descriptions = Vertex::get_attribute_descriptions();
+    auto binding_description = vertex_t::get_binding_description();
+    auto attribute_descriptions = vertex_t::get_attribute_descriptions();
     uint32_t attribute_size = static_cast<uint32_t>(attribute_descriptions.size());
 
     VkPipelineVertexInputStateCreateInfo vertex_input_info{};
@@ -224,7 +224,7 @@ void init_graphics_pipeline(t_ren* ren) {
     rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
     rasterizer.lineWidth = 1.0f;
     rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
     rasterizer.depthBiasEnable = VK_FALSE;
 
     VkPipelineMultisampleStateCreateInfo multisampling{};

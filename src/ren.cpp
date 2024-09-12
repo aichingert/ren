@@ -1,12 +1,10 @@
 #include "ren.h"
 #include "window.cpp"
-#include "vulkan/vertex.h"
 #include "vulkan/vulkan.cpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <chrono>
 #include <cstring>
 
 extern "C" t_ren ren_init(uint32_t width, uint32_t height, const char* title) {
@@ -18,39 +16,16 @@ extern "C" t_ren ren_init(uint32_t width, uint32_t height, const char* title) {
     return ren;
 }
 
-void update_uniform_buffer(t_ren* ren) {
-    static auto start = std::chrono::high_resolution_clock::now();
-    auto current = std::chrono::high_resolution_clock::now();
-
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(current - start).count();
-
-    UniformBufferObject ubo{};
-
-    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.view = glm::lookAt(
-            glm::vec3(2.0f, 2.0f, 2.0f),
-            glm::vec3(0.0f, 0.0f, 0.0f), 
-            glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.proj = glm::perspective(
-            glm::radians(45.0f), 
-            ren->swap_chain_extent.width / (float) ren->swap_chain_extent.height, 
-            0.1f, 
-            10.0f);
-    ubo.proj[1][1] *= -1;
-
-    memcpy(ren->uniform_buffers_mapped[ren->current_frame], &ubo, sizeof(ubo));
-}
-
 extern "C" void ren_draw_frame(t_ren* ren) {
     vkWaitForFences(ren->device, 1, &ren->in_flight_fences[ren->current_frame], VK_TRUE, UINT64_MAX);
 
     uint32_t image_idx;
     VkResult result = vkAcquireNextImageKHR(
-        ren->device, 
-        ren->swap_chain, 
-        UINT64_MAX, 
-        ren->image_available_semaphores[ren->current_frame], 
-        VK_NULL_HANDLE, 
+        ren->device,
+        ren->swap_chain,
+        UINT64_MAX,
+        ren->image_available_semaphores[ren->current_frame],
+        VK_NULL_HANDLE,
         &image_idx);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
@@ -58,8 +33,6 @@ extern "C" void ren_draw_frame(t_ren* ren) {
     } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw std::runtime_error("Failed to aquire swap chain image!");
     }
-
-    update_uniform_buffer(ren);
 
     vkResetFences(ren->device, 1, &ren->in_flight_fences[ren->current_frame]);
 
@@ -82,9 +55,9 @@ extern "C" void ren_draw_frame(t_ren* ren) {
     submit_info.pSignalSemaphores = signal_semaphores;
 
     if (vkQueueSubmit(
-        ren->graphics_queue, 
-        1, 
-        &submit_info, 
+        ren->graphics_queue,
+        1,
+        &submit_info,
         ren->in_flight_fences[ren->current_frame]) != VK_SUCCESS
     ) {
         throw std::runtime_error("Failed to submit draw command buffer!");
@@ -122,7 +95,7 @@ extern "C" void ren_destroy(t_ren* ren) {
     vkDestroyDescriptorPool(ren->device, ren->descriptor_pool, nullptr);
     vkDestroyDescriptorSetLayout(ren->device, ren->descriptor_set_layout, nullptr);
 
-    vk::destroy_swap_chain(ren); 
+    vk::destroy_swap_chain(ren);
 
     vkDestroyBuffer(ren->device, ren->index_buffer, nullptr);
     vkFreeMemory(ren->device, ren->index_buffer_memory, nullptr);
@@ -133,7 +106,7 @@ extern "C" void ren_destroy(t_ren* ren) {
     vkDestroyPipeline(ren->device, ren->graphics_pipeline, nullptr);
     vkDestroyPipelineLayout(ren->device, ren->pipeline_layout, nullptr);
 
-    vkDestroyRenderPass(ren->device, ren->render_pass, nullptr); 
+    vkDestroyRenderPass(ren->device, ren->render_pass, nullptr);
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(ren->device, ren->image_available_semaphores[i], nullptr);

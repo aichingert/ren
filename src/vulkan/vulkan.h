@@ -16,51 +16,10 @@ const std::vector<const char*> VALIDATION_LAYERS = {
     const bool ENABLE_VALIDATION_LAYERS = true;
 #endif
 
-struct t_queue_family_indices {
-    std::optional<uint32_t> present_family;
-    std::optional<uint32_t> graphics_family;
+namespace vk {
 
-    bool is_complete() {
-        return present_family.has_value() && graphics_family.has_value();
-    }
-};
+void init(t_ren* ren, const char* title);
 
-struct SwapChainSupportDetails {
-    VkSurfaceCapabilitiesKHR capabilities;
-    std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> present_modes;
-};
-
-// TODO: find a better place for this
-SwapChainSupportDetails query_swap_chain_support(t_ren* ren, VkPhysicalDevice device) {
-    SwapChainSupportDetails details;
-
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, ren->surface, &details.capabilities);
-
-    uint32_t format_count;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, ren->surface, &format_count, nullptr);
-
-    if (format_count != 0) {
-        details.formats.resize(format_count);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(
-                device,
-                ren->surface,
-                &format_count, details.formats.data());
-    }
-
-    uint32_t present_mode_count;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(device, ren->surface, &present_mode_count, nullptr);
-
-    if (present_mode_count != 0) {
-        details.present_modes.resize(present_mode_count);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(
-                device,
-                ren->surface,
-                &present_mode_count,
-                details.present_modes.data());
-    }
-
-    return details;
 }
 
 #endif /* LIB_VULKAN_H */
