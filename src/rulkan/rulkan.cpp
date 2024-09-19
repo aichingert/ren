@@ -6,6 +6,8 @@
 #include "device.hpp"
 #include "swapchain.hpp"
 #include "pipeline.hpp"
+#include "command.hpp"
+#include "sync.hpp"
 
 namespace rulkan {
 
@@ -19,6 +21,9 @@ t_rulkan init(GLFWwindow *window, const char *title) {
     init_image_views(rulkan);
     init_render_pass(rulkan);
     init_framebuffers(rulkan, window);
+    init_command_pools(rulkan);
+    init_command_buffers(rulkan);
+    init_sync_structures(rulkan);
 
     return rulkan;
 }
