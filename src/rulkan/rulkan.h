@@ -14,6 +14,18 @@ struct t_frame_data {
     VkCommandBuffer command_buffer;
 };
 
+struct t_swapchain {
+    VkSwapchainKHR self;
+    VkExtent2D extent;
+    VkFormat format;
+
+    VkImage     *images;
+    VkImageView *image_views;
+    VkFramebuffer *framebuffers;
+
+    size_t size;
+};
+
 struct t_rulkan {
     VkInstance instance;
     VkSurfaceKHR surface;
@@ -24,6 +36,11 @@ struct t_rulkan {
     VkQueue present_queue;
     VkQueue graphics_queue;
 
+    t_swapchain swapchain;
+    VkRenderPass render_pass;
+
+    VkPipeline graphics_pipeline;
+    VkPipelineLayout pipeline_layout;
 
     t_frame_data frames[FRAME_OVERLAP];
 };

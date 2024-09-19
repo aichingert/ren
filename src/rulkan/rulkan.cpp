@@ -4,6 +4,8 @@
 #include "instance.hpp"
 #include "../window/window.hpp"
 #include "device.hpp"
+#include "swapchain.hpp"
+#include "pipeline.hpp"
 
 namespace rulkan {
 
@@ -13,6 +15,10 @@ t_rulkan init(GLFWwindow *window, const char *title) {
     init_instance(rulkan, title);
     window::init_surface(window, &rulkan);
     init_devices(rulkan);
+    init_swapchain(rulkan, window);
+    init_image_views(rulkan);
+    init_render_pass(rulkan);
+    init_framebuffers(rulkan, window);
 
     return rulkan;
 }

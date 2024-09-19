@@ -16,6 +16,18 @@ const t_frame_data = extern struct {
     command_buffer: glfw.VkCommandBuffer,
 };
 
+const t_swapchain = extern struct {
+    self: glfw.VkSwapchainKHR,
+    extent: glfw.VkExtent2D,
+    format: glfw.VkFormat,
+
+    images: ?*glfw.VkImage,
+    image_views: ?*glfw.VkImageView,
+    framebuffers: ?*glfw.VkFramebuffer,
+
+    size: usize,
+};
+
 const t_rulkan = extern struct {
     instance: glfw.VkInstance,
     surface: glfw.VkSurfaceKHR,
@@ -25,6 +37,12 @@ const t_rulkan = extern struct {
 
     present_queue: glfw.VkQueue,
     graphics_queue: glfw.VkQueue,
+
+    swapchain: t_swapchain,
+    render_pass: glfw.VkRenderPass,
+
+    graphics_pipeline: glfw.VkPipeline,
+    pipeline_layout: glfw.VkPipelineLayout,
 
     frames: [todo]t_frame_data,
 };
