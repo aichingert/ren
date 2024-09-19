@@ -48,5 +48,9 @@ pub fn build(b: *std.Build) void {
 const sources = [_][]const u8{
     "ren.cpp",
     "window/window.cpp",
+    "rulkan/queue.cpp",
+    "rulkan/device.cpp",
     "rulkan/rulkan.cpp",
+    "rulkan/instance.cpp",
+    "rulkan/swapchain.cpp",
 };

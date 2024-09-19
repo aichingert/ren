@@ -1,12 +1,15 @@
 #include "ren.h"
-#include "window/window.h"
+#include "window/window.hpp"
 
 #include <cstring>
 
 extern "C" t_ren ren_init(uint32_t width, uint32_t height, const char* title) {
+    auto window = window::init(width, height, title);
+    auto rulkan = rulkan::init(window, title);
+
     return t_ren{
-        .window = window::init(width, height, title),
-        .rulkan = rulkan::init(),
+        .window = window,
+        .rulkan = rulkan,
     };
 }
 

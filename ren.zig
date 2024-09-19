@@ -18,6 +18,13 @@ const t_frame_data = extern struct {
 
 const t_rulkan = extern struct {
     instance: glfw.VkInstance,
+    surface: glfw.VkSurfaceKHR,
+
+    device: glfw.VkDevice,
+    physical_device: glfw.VkPhysicalDevice,
+
+    present_queue: glfw.VkQueue,
+    graphics_queue: glfw.VkQueue,
 
     frames: [todo]t_frame_data,
 };

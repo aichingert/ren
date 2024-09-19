@@ -1,13 +1,20 @@
 #include "rulkan.h"
+
 #include "util.hpp"
+#include "instance.hpp"
+#include "../window/window.hpp"
+#include "device.hpp"
 
 namespace rulkan {
 
-t_rulkan init() {
-    VkResult result = VK_SUCCESS;
+t_rulkan init(GLFWwindow *window, const char *title) {
+    t_rulkan rulkan = {};
 
-    VK_CHECK(result, "failed");
-    return t_rulkan{};
+    init_instance(rulkan, title);
+    window::init_surface(window, &rulkan);
+    init_devices(rulkan);
+
+    return rulkan;
 }
 
 void destroy(const t_rulkan& rulkan) {
