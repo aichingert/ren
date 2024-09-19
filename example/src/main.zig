@@ -4,10 +4,6 @@ const Ren = @import("ren").Ren;
 pub fn main() !void {
     var ren = Ren.init(300, 300, "example");
     defer ren.deinit();
-
-    while (true) {
-        ren.drawFrame();
-    }
 }
 
 test "simple test" {

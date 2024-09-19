@@ -4,56 +4,31 @@ const glfw = @cImport({
     @cInclude("GLFW/glfw3.h");
 });
 
-const t_ren = extern struct {
-    window: ?*glfw.GLFWwindow,
+extern const frame_overlap: usize;
+const todo: usize = 2; // TODO: get frome frame_overlap
 
-    instance: glfw.VkInstance,
-    surface: glfw.VkSurfaceKHR,
-
-    device: glfw.VkDevice,
-    physical_device: glfw.VkPhysicalDevice,
-
-    graphics_queue: glfw.VkQueue,
-    present_queue: glfw.VkQueue,
-
-    swap_chain: glfw.VkSwapchainKHR,
-    swap_chain_extent: glfw.VkExtent2D,
-    swap_chain_images: ?*glfw.VkImage,
-    swap_chain_image_views: ?*glfw.VkImageView,
-    swap_chain_images_size: usize,
-    swap_chain_framebuffers: ?*glfw.VkFramebuffer,
-    swap_chain_image_format: glfw.VkFormat,
-
-    render_pass: glfw.VkRenderPass,
-    descriptor_set_layout: glfw.VkDescriptorSetLayout,
-    descriptor_pool: glfw.VkDescriptorPool,
-    descriptor_sets: ?*glfw.VkDescriptorSet,
-    pipeline_layout: glfw.VkPipelineLayout,
-    graphics_pipeline: glfw.VkPipeline,
+const t_frame_data = extern struct {
+    render_fence: glfw.VkFence,
+    present_sema: glfw.VkSemaphore,
+    render_sema: glfw.VkSemaphore,
 
     command_pool: glfw.VkCommandPool,
-    command_buffers: ?*glfw.VkCommandBuffer,
+    command_buffer: glfw.VkCommandBuffer,
+};
 
-    vertex_buffer: glfw.VkBuffer,
-    vertex_buffer_memory: glfw.VkDeviceMemory,
-    index_buffer: glfw.VkBuffer,
-    index_buffer_memory: glfw.VkDeviceMemory,
+const t_rulkan = extern struct {
+    instance: glfw.VkInstance,
 
-    uniform_buffers: ?*glfw.VkBuffer,
-    uniform_buffers_memory: ?*glfw.VkDeviceMemory,
-    uniform_buffers_mapped: ?**anyopaque,
+    frames: [todo]t_frame_data,
+};
 
-    in_flight_fences: ?*glfw.VkFence,
-    image_available_semaphores: ?*glfw.VkSemaphore,
-    render_finished_semaphores: ?*glfw.VkSemaphore,
-
-    current_frame: c_uint,
+const t_ren = extern struct {
+    window: ?*glfw.GLFWwindow,
+    rulkan: t_rulkan,
 };
 
 extern fn ren_init(width: c_uint, height: c_uint, title: [*c]u8) t_ren;
 extern fn ren_destroy(ren: *t_ren) void;
-
-extern fn ren_draw_frame(ren: *t_ren) void;
 
 pub const Ren = struct {
     ren: t_ren,
@@ -68,10 +43,6 @@ pub const Ren = struct {
                 @as([*c]u8, @constCast(@alignCast(title))),
             ),
         };
-    }
-
-    pub fn drawFrame(self: *Self) void {
-        ren_draw_frame(&self.ren);
     }
 
     pub fn deinit(self: *Self) void {
