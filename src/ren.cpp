@@ -13,6 +13,11 @@ extern "C" t_ren ren_init(uint32_t width, uint32_t height, const char* title) {
     };
 }
 
+extern "C" void ren_draw(t_ren *ren) {
+    rulkan::draw(ren->rulkan, ren->window, ren->frame);
+    ren->frame = (ren->frame + 1) % FRAME_OVERLAP;
+}
+
 extern "C" void ren_destroy(t_ren *ren) {
     window::destroy(ren);
     rulkan::destroy(ren->rulkan);

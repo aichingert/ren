@@ -6,9 +6,16 @@
 
 const size_t FRAME_OVERLAP = 2;
 
+struct t_vertex_buffer {
+    VkBuffer buffer;
+    VkDeviceMemory memory;
+};
+
 struct t_frame_data {
     VkFence         render_fence;
     VkSemaphore     present_sema, render_sema;
+
+    t_vertex_buffer vb;
 
     VkCommandPool   command_pool;
     VkCommandBuffer command_buffer;
@@ -48,6 +55,9 @@ struct t_rulkan {
 namespace rulkan {
 
 t_rulkan init(GLFWwindow *window, const char *title);
+
+void draw(t_rulkan& rulkan, GLFWwindow *window, uint32_t frame);
+
 void destroy(const t_rulkan&);
 
 }

@@ -56,5 +56,6 @@ const sources = [_][]const u8{
     "rulkan/swapchain.cpp",
     "rulkan/shader.cpp",
     "rulkan/command.cpp",
+    "rulkan/buffer.cpp",
     "rulkan/sync.cpp",
 };

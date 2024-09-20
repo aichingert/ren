@@ -7,10 +7,17 @@ const glfw = @cImport({
 extern const frame_overlap: usize;
 const todo: usize = 2; // TODO: get frome frame_overlap
 
+const t_vertex_buffer = extern struct {
+    buffer: glfw.VkBuffer,
+    memory: glfw.VkDeviceMemory,
+};
+
 const t_frame_data = extern struct {
     render_fence: glfw.VkFence,
     present_sema: glfw.VkSemaphore,
     render_sema: glfw.VkSemaphore,
+
+    vb: t_vertex_buffer,
 
     command_pool: glfw.VkCommandPool,
     command_buffer: glfw.VkCommandBuffer,
@@ -50,9 +57,14 @@ const t_rulkan = extern struct {
 const t_ren = extern struct {
     window: ?*glfw.GLFWwindow,
     rulkan: t_rulkan,
+
+    frame: u32,
 };
 
 extern fn ren_init(width: c_uint, height: c_uint, title: [*c]u8) t_ren;
+
+extern fn ren_draw(ren: *t_ren) void;
+
 extern fn ren_destroy(ren: *t_ren) void;
 
 pub const Ren = struct {
@@ -68,6 +80,10 @@ pub const Ren = struct {
                 @as([*c]u8, @constCast(@alignCast(title))),
             ),
         };
+    }
+
+    pub fn draw(self: *Self) void {
+        ren_draw(@as(*t_ren, @ptrCast(@alignCast(self))));
     }
 
     pub fn deinit(self: *Self) void {

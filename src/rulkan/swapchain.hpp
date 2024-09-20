@@ -22,7 +22,7 @@ void init_image_views(t_rulkan& rulkan);
 void init_swapchain(t_rulkan& rulkan, GLFWwindow *window);
 
 void destroy_swapchain(t_rulkan& rulkan);
-void recreate_swapchain(t_rulkan& rulkan);
+void recreate_swapchain(t_rulkan& rulkan, GLFWwindow *window);
 
 }
 

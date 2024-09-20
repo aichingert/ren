@@ -4,6 +4,11 @@ const Ren = @import("ren").Ren;
 pub fn main() !void {
     var ren = Ren.init(300, 300, "example");
     defer ren.deinit();
+    var counter: u32 = 0;
+
+    while (counter < 5_000) : (counter += 1) {
+        ren.draw();
+    }
 }
 
 test "simple test" {
