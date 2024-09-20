@@ -85,9 +85,8 @@ void init_logical_device(t_rulkan& rulkan) {
 
     // This feature needs to be activated to use
     // topology types that do not fill shapes
-    VkPhysicalDeviceFeatures device_features{
-        .fillModeNonSolid = true,
-    };
+    VkPhysicalDeviceFeatures device_features{};
+    device_features.fillModeNonSolid = true;
 
     VkDeviceCreateInfo create_info{};
     create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

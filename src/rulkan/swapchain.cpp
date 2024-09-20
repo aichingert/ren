@@ -1,3 +1,6 @@
+#include <limits>
+#include <algorithm>
+
 #include "swapchain.hpp"
 #include "queue.hpp"
 #include "util.hpp"
@@ -54,7 +57,7 @@ VkPresentModeKHR choose_swap_present_mode(const std::vector<VkPresentModeKHR> &m
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-VkExtent2D choose_swap_extent(t_rulkan& rulkan, VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow *window) {
+VkExtent2D choose_swap_extent(VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow *window) {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         return capabilities.currentExtent;
 
@@ -74,7 +77,7 @@ VkExtent2D choose_swap_extent(t_rulkan& rulkan, VkSurfaceCapabilitiesKHR& capabi
     return actual_extent;
 }
 
-void init_framebuffers(t_rulkan& rulkan, GLFWwindow *window) {
+void init_framebuffers(t_rulkan& rulkan) {
     size_t size = sizeof(VkFramebuffer) * rulkan.swapchain.size;
     rulkan.swapchain.framebuffers = static_cast<VkFramebuffer*>(malloc(size));
 
@@ -132,7 +135,7 @@ void init_swapchain(t_rulkan& rulkan, GLFWwindow *window) {
     t_swapchain_support_details swapchain_support = query_swapchain_support(rulkan, rulkan.physical_device);
     VkSurfaceFormatKHR surface_format = choose_swap_surface_format(swapchain_support.formats);
     VkPresentModeKHR present_mode = choose_swap_present_mode(swapchain_support.present_modes);
-    VkExtent2D extent = choose_swap_extent(rulkan, swapchain_support.capabilities, window);
+    VkExtent2D extent = choose_swap_extent(swapchain_support.capabilities, window);
 
     uint32_t image_count = swapchain_support.capabilities.minImageCount + 1;
 
@@ -212,7 +215,7 @@ void recreate_swapchain(t_rulkan& rulkan, GLFWwindow *window) {
 
     init_swapchain(rulkan, window);
     init_image_views(rulkan);
-    init_framebuffers(rulkan, window);
+    init_framebuffers(rulkan);
 }
 
 

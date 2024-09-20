@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "rulkan.h"
 
 #include "util.hpp"
@@ -22,7 +24,7 @@ t_rulkan init(GLFWwindow *window, const char *title) {
     init_image_views(rulkan);
     init_render_pass(rulkan);
     init_graphics_pipeline(rulkan);
-    init_framebuffers(rulkan, window);
+    init_framebuffers(rulkan);
     init_command_pools(rulkan);
 
     for(size_t i = 0; i < FRAME_OVERLAP; i++) {
@@ -53,8 +55,11 @@ void draw(t_rulkan& rulkan, GLFWwindow *window, uint32_t frame) {
         throw std::runtime_error("Failed to aquire swap chain image!");
     }
 
+
     vkResetFences(rulkan.device, 1, &rulkan.frames[frame].render_fence);
     vkResetCommandBuffer(rulkan.frames[frame].command_buffer, 0);
+
+
     record_command_buffer(rulkan, rulkan.frames[frame].command_buffer, frame, image_idx);
 
     VkSubmitInfo submit_info{};
@@ -94,12 +99,15 @@ void draw(t_rulkan& rulkan, GLFWwindow *window, uint32_t frame) {
     }
 }
 
-void destroy(const t_rulkan& rulkan) {
+void destroy(t_rulkan& rulkan) {
+    destroy_swapchain(rulkan);
+
     for (size_t i = 0; i < FRAME_OVERLAP; i++) {
         //VkDestroyFence(rulkan.device, rulkan.frames[i].render_fence, nullptr);
         //VkDestroySemaphore(rulkan.device, rulkan.frames[i].render_sema, nullptr);
         //VkDestroySemaphore(rulkan.device, rulkan.frames[i].present_sema, nullptr);
     }
+
 }
 
 }

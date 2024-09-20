@@ -58,7 +58,7 @@ t_rulkan init(GLFWwindow *window, const char *title);
 
 void draw(t_rulkan& rulkan, GLFWwindow *window, uint32_t frame);
 
-void destroy(const t_rulkan&);
+void destroy(t_rulkan& rulkan);
 
 }
 

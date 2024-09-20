@@ -6,7 +6,7 @@ pub fn main() !void {
     defer ren.deinit();
     var counter: u32 = 0;
 
-    while (counter < 5_000) : (counter += 1) {
+    while (counter < 50000) : (counter += 1) {
         ren.draw();
     }
 }

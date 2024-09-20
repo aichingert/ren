@@ -1,4 +1,6 @@
 #include <vector>
+#include <cstring>
+#include <iostream>
 
 #include "command.hpp"
 #include "vertex.hpp"
@@ -8,6 +10,7 @@
 namespace rulkan {
 
 void record_command_buffer(t_rulkan& rulkan, VkCommandBuffer cmd, uint32_t frame, uint32_t image) {
+    std::cout << "joined" << std::endl;
 
     auto next = VERTICES[frame];
 
@@ -16,7 +19,9 @@ void record_command_buffer(t_rulkan& rulkan, VkCommandBuffer cmd, uint32_t frame
     memcpy(data, next.data(), sizeof(next[0]) * next.size());
     vkUnmapMemory(rulkan.device, rulkan.frames[frame].vb.memory);
 
-    VkCommandBufferBeginInfo begin_info { .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
+    VkCommandBufferBeginInfo begin_info {};
+    begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
     VK_CHECK(vkBeginCommandBuffer(cmd, &begin_info), "Failed to record command buffer!");
 
     VkRenderPassBeginInfo render_pass_info{};
@@ -74,15 +79,14 @@ void init_command_pools(t_rulkan& rulkan) {
 }
 
 void init_command_buffers(t_rulkan& rulkan) {
-    VkResult res = VK_SUCCESS;
-    VkCommandBufferAllocateInfo alloc_info{};
-    alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    alloc_info.commandBufferCount = 1;
-
     for (size_t i = 0; i < FRAME_OVERLAP; i++) {
+        VkCommandBufferAllocateInfo alloc_info{};
+        alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        alloc_info.commandBufferCount = 1;
         alloc_info.commandPool = rulkan.frames[i].command_pool;
-        res = vkAllocateCommandBuffers(rulkan.device, &alloc_info, &rulkan.frames[i].command_buffer);
+
+        VkResult res = vkAllocateCommandBuffers(rulkan.device, &alloc_info, &rulkan.frames[i].command_buffer);
         VK_CHECK(res, "Failed to create frame command buffers!");
     }
 }

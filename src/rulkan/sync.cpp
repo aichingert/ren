@@ -12,7 +12,7 @@ void init_sync_structures(t_rulkan& rulkan) {
     fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     fence_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-	for (int i = 0; i < FRAME_OVERLAP; i++) {     
+	for (size_t i = 0; i < FRAME_OVERLAP; i++) {     
         res = vkCreateFence(rulkan.device, &fence_info, nullptr, &rulkan.frames[i].render_fence);
         VK_CHECK(res, "Failed to create render fence!");
 

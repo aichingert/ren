@@ -9,4 +9,4 @@ void init_sync_structures(t_rulkan& rulkan);
 
 }
 
-#endif SYNC_H
+#endif /* SYNC_H */

@@ -5,7 +5,7 @@
 
 namespace rulkan {
 
-std::vector<char> read_file(const std::string& filename);
+std::vector<char> read_file(const char *filename);
 
 }
 
