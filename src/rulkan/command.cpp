@@ -1,6 +1,5 @@
 #include <vector>
 #include <cstring>
-#include <iostream>
 
 #include "command.hpp"
 #include "vertex.hpp"
@@ -9,14 +8,27 @@
 
 namespace rulkan {
 
-void record_command_buffer(t_rulkan& rulkan, VkCommandBuffer cmd, uint32_t frame, uint32_t image) {
-    std::cout << "joined" << std::endl;
+void record_command_buffer(t_rulkan& rulkan, t_list& vec, VkCommandBuffer cmd, uint32_t frame, uint32_t image) {
+    std::vector<t_vertex> vertices(vec.size);
 
-    auto next = VERTICES[frame];
+    for (size_t i = 0; i < vec.size; i++) {
+        vertices.push_back(t_vertex{
+            .pos = {vec.data[i].x, vec.data[i].y},
+            .color = {vec.data[i].r, vec.data[i].g, vec.data[i].b},
+        });
+    }
+
+    vec.size = 0;
 
     void* data;
-    vkMapMemory(rulkan.device, rulkan.frames[frame].vb.memory, 0, sizeof(next[0]) * next.size(), 0, &data);
-    memcpy(data, next.data(), sizeof(next[0]) * next.size());
+    vkMapMemory(
+        rulkan.device, 
+        rulkan.frames[frame].vb.memory, 
+        0, 
+        sizeof(vertices[0]) * vertices.size(), 
+        0, 
+        &data);
+    memcpy(data, vertices.data(), sizeof(vertices[0]) * vertices.size());
     vkUnmapMemory(rulkan.device, rulkan.frames[frame].vb.memory);
 
     VkCommandBufferBeginInfo begin_info {};
@@ -56,7 +68,7 @@ void record_command_buffer(t_rulkan& rulkan, VkCommandBuffer cmd, uint32_t frame
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(cmd, 0, 1, vertex_buffers, offsets);
 
-    vkCmdDraw(cmd, static_cast<uint32_t>(next.size()), 1, 0, 0);
+    vkCmdDraw(cmd, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 
     vkCmdEndRenderPass(cmd);
 

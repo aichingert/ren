@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "rulkan.h"
 
 #include "util.hpp"
@@ -37,7 +35,7 @@ t_rulkan init(GLFWwindow *window, const char *title) {
     return rulkan;
 }
 
-void draw(t_rulkan& rulkan, GLFWwindow *window, uint32_t frame) {
+void draw(t_rulkan& rulkan, t_list& vertices, GLFWwindow *window, uint32_t frame) {
     vkWaitForFences(rulkan.device, 1, &rulkan.frames[frame].render_fence, VK_TRUE, UINT64_MAX);
 
     uint32_t image_idx;
@@ -55,12 +53,9 @@ void draw(t_rulkan& rulkan, GLFWwindow *window, uint32_t frame) {
         throw std::runtime_error("Failed to aquire swap chain image!");
     }
 
-
     vkResetFences(rulkan.device, 1, &rulkan.frames[frame].render_fence);
     vkResetCommandBuffer(rulkan.frames[frame].command_buffer, 0);
-
-
-    record_command_buffer(rulkan, rulkan.frames[frame].command_buffer, frame, image_idx);
+    record_command_buffer(rulkan, vertices, rulkan.frames[frame].command_buffer, frame, image_idx);
 
     VkSubmitInfo submit_info{};
     submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -100,14 +95,27 @@ void draw(t_rulkan& rulkan, GLFWwindow *window, uint32_t frame) {
 }
 
 void destroy(t_rulkan& rulkan) {
+    // TODO: fix vulkan validation errors
     destroy_swapchain(rulkan);
+    
+    vkDestroyPipeline(rulkan.device, rulkan.graphics_pipeline, nullptr);
+    vkDestroyPipelineLayout(rulkan.device, rulkan.pipeline_layout, nullptr);
+    vkDestroyRenderPass(rulkan.device, rulkan.render_pass, nullptr);
+
 
     for (size_t i = 0; i < FRAME_OVERLAP; i++) {
-        //VkDestroyFence(rulkan.device, rulkan.frames[i].render_fence, nullptr);
-        //VkDestroySemaphore(rulkan.device, rulkan.frames[i].render_sema, nullptr);
-        //VkDestroySemaphore(rulkan.device, rulkan.frames[i].present_sema, nullptr);
+        vkDestroyFence(rulkan.device, rulkan.frames[i].render_fence, nullptr);
+        vkDestroySemaphore(rulkan.device, rulkan.frames[i].render_sema, nullptr);
+        vkDestroySemaphore(rulkan.device, rulkan.frames[i].present_sema, nullptr);
+
+        vkDestroyCommandPool(rulkan.device, rulkan.frames[i].command_pool, nullptr);
+        vkDestroyBuffer(rulkan.device, rulkan.frames[i].vb.buffer, nullptr);
+        vkFreeMemory(rulkan.device, rulkan.frames[i].vb.memory, nullptr);
     }
 
+    vkDestroyDevice(rulkan.device, nullptr);
+    vkDestroySurfaceKHR(rulkan.instance, rulkan.surface, nullptr);
+    vkDestroyInstance(rulkan.instance, nullptr);
 }
 
 }

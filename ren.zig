@@ -54,16 +54,37 @@ const t_rulkan = extern struct {
     frames: [todo]t_frame_data,
 };
 
+const t_vec2 = extern struct {
+    x: f32,
+    y: f32,
+};
+
+const t_list = extern struct {
+    const vertex = extern struct {
+        x: f32,
+        y: f32,
+        r: f32,
+        g: f32,
+        b: f32,
+    };
+
+    data: ?*vertex,
+    cap: usize,
+    size: usize,
+};
+
 const t_ren = extern struct {
     window: ?*glfw.GLFWwindow,
     rulkan: t_rulkan,
 
+    vertices: t_list,
     frame: u32,
 };
 
 extern fn ren_init(width: c_uint, height: c_uint, title: [*c]u8) t_ren;
 
-extern fn ren_draw(ren: *t_ren) void;
+extern fn ren_draw_triangle(ren: *t_ren, a: t_vec2, b: t_vec2, c: t_vec2) void;
+extern fn ren_draw_frame(ren: *t_ren) void;
 
 extern fn ren_destroy(ren: *t_ren) void;
 
@@ -82,8 +103,12 @@ pub const Ren = struct {
         };
     }
 
+    pub fn triangle(self: *Self, a: t_vec2, b: t_vec2, c: t_vec2) void {
+        ren_draw_triangle(@as(*t_ren, @ptrCast(@alignCast(self))), a, b, c);
+    }
+
     pub fn draw(self: *Self) void {
-        ren_draw(@as(*t_ren, @ptrCast(@alignCast(self))));
+        ren_draw_frame(@as(*t_ren, @ptrCast(@alignCast(self))));
     }
 
     pub fn deinit(self: *Self) void {
