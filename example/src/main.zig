@@ -5,16 +5,24 @@ pub fn main() !void {
     var ren = Ren.init(300, 300, "example");
     defer ren.deinit();
     var counter: u32 = 0;
-    var offset: f32 = 0.0001;
 
     while (counter < 500) : (counter += 1) {
-        ren.triangle(
-            .{ .x = -0.5 + offset, .y = -0.5 + offset },
-            .{ .x = 0.5 + offset, .y = -0.5 + offset },
-            .{ .x = 0.5 + offset, .y = 0.5 + offset },
-        );
+        const oa = .{ .x = 0.0, .y = -0.5 };
+        const ob = .{ .x = 0.25, .y = 0 };
+        const oc = .{ .x = -0.25, .y = 0 };
 
-        offset += 0.0002;
+        const la = .{ .x = -0.25, .y = 0.0 };
+        const lb = .{ .x = 0.00, .y = 0.5 };
+        const lc = .{ .x = -0.50, .y = 0.5 };
+
+        const ra = .{ .x = 0.25, .y = 0 };
+        const rb = .{ .x = 0.5, .y = 0.5 };
+        const rc = .{ .x = 0, .y = 0.5 };
+
+        ren.triangle(oa, ob, oc);
+        ren.triangle(la, lb, lc);
+        ren.triangle(ra, rb, rc);
+
         ren.draw();
     }
 }

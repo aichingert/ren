@@ -37,24 +37,6 @@ struct t_vertex {
     }
 };
 
-const std::vector<t_vertex> TRI = {
-    {t_vec2{ .x = -0.5f, .y = -0.5f}, t_vec3{ .x = 1.0f, .y = 0.0f, .z = 0.0f}},
-    {t_vec2{ .x = 0.5f, .y = -0.5f}, t_vec3{ .x = 0.0f, .y = 1.0f, .z = 0.0f}},
-    {t_vec2{ .x = 0.5f, .y = 0.5f}, t_vec3{ .x = 0.0f, .y = 0.0f, .z = 1.0f}}
-};
-
-const std::vector<t_vertex> QUAD = {
-    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}},
-    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
-};
-
-const std::vector<t_vertex> VERTICES[2] = {
-    TRI,
-    QUAD
-};
-
 namespace rulkan {
 }
 
