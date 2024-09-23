@@ -20,7 +20,7 @@ uint32_t find_memory_type(const t_rulkan& rulkan, uint32_t type_filter, VkMemory
 }
 
 t_vertex_buffer init_vertex_buffer(const t_rulkan& rulkan) {
-    VkDeviceSize buffer_size = sizeof(t_vertex) * 1024 * 128; 
+    VkDeviceSize buffer_size = sizeof(t_vertex) * 1024 * 1024 * 16; 
     t_vertex_buffer vb{};
 
     VkBufferCreateInfo buffer_info{};

@@ -9,6 +9,8 @@
 namespace rulkan {
 
 void record_command_buffer(t_rulkan& rulkan, t_list& vec, VkCommandBuffer cmd, uint32_t frame, uint32_t image) {
+    std::cout << vec.size << std::endl;
+
     std::vector<t_vertex> vertices(vec.size);
 
     for (size_t i = 0; i < vec.size; i++) {

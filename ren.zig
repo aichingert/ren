@@ -54,7 +54,7 @@ const t_rulkan = extern struct {
     frames: [todo]t_frame_data,
 };
 
-const t_vec2 = extern struct {
+pub const t_vec2 = extern struct {
     x: f32,
     y: f32,
 };
