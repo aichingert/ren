@@ -46,6 +46,7 @@ extern "C" void ren_draw_triangle(t_ren *ren, t_vec2 a, t_vec2 b, t_vec2 c) {
 }
 
 extern "C" void ren_draw_frame(t_ren *ren) {
+    glfwPollEvents();
     rulkan::draw(ren->rulkan, ren->vertices, ren->window, ren->frame);
     ren->frame = (ren->frame + 1) % FRAME_OVERLAP;
 }

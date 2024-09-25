@@ -21,7 +21,7 @@ pub fn main() !void {
             .{ .x = 0.0, .y = -0.5 },
             .{ .x = 0.5, .y = 0.5 },
             .{ .x = -0.5, .y = 0.5 },
-        }, 2 });
+        }, 1 });
 
         while (list.items.len > 0) {
             const t = list.pop();
